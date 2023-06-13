@@ -6,7 +6,7 @@ module.exports = {
     description: 'Full-Stack JavaScript with PostgreSQL, Express, AngularJS, and Node.js',
     keywords: 'postgresql, express, angularjs, node.js, sequelize, passport'
   },
-  port: process.env.PORT || 5000,
+  port: process.env.PORT || 1000,
   host: process.env.HOST || '0.0.0.0',
   templateEngine: 'swig',
   // Session Cookie settings
