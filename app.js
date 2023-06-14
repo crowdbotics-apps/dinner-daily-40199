@@ -16,7 +16,7 @@ const utils = rfr('/shared/utils');
 const routes = rfr('/routes');
 const notificationModel = rfr('/models/admin/notification');
 const config = require('./server/config/config.js');
-rfr('/db/index');
+//rfr('/db/index');
 
 
 // Initialize pretty-error
@@ -53,7 +53,9 @@ app.use(bodyParser.urlencoded({
   });
 
  
-
+app.get("/hello",(req, res)=>{
+res.send("Hello")
+})
 
   const server = http.createServer(app);
   console.log("STARTING-------------------------------------")
