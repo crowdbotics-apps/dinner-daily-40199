@@ -6,15 +6,9 @@ utils = rfr('/shared/utils');
 
 const dbObj = config['database'];
 
-let pool = mysql.createPool({
-  connectionLimit: dbObj['connectionLimit'],
-  host: dbObj['host'],
-  user: dbObj['username'],
-  password: dbObj['password'],
-  database: dbObj['db'],
-  maxIdle: dbObj['maxIdle'],
-  idleTimeout: dbObj['idleTimeout']
-});
+//let pool = mysql.createPool(`mysql://${dbObj.username}:${dbObj.password}@${dbObj.host}/${dbObj.db}?reconnect=true`);
+
+let pool = mysql.createPool(process.env.CLEARDB_AMBER_URL);
 
 pool.getConnection((err, connection) => {
   if (err)
@@ -23,3 +17,4 @@ pool.getConnection((err, connection) => {
 });
 
 module.exports = pool;
+
