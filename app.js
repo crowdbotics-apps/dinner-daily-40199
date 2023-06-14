@@ -60,7 +60,7 @@ app.use(bodyParser.urlencoded({
   console.log(process.env.CLEARDB_AMBER_URL)
   server.listen(app.get('port'), function () {
     console.log('App is listening on port ' + config.port + '! Visit localhost:' + config.port + ' in your browser.');
-    utils.log('Server started successfully on port -->', config.port);
+   utils.log('Server started successfully on port -->', config.port);
     routes.bindAllRequests(app);
     app.use(rfr('/universalRoute.js'));
    // notificationModel.reshceduleNotification();
