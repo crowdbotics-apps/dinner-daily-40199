@@ -1,3 +1,6 @@
+const dotenv = require("dotenv");
+dotenv.config()
+
 
 // const database = {
 //     host: parsedEnv.DB_HOST,
