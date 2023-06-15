@@ -2,8 +2,6 @@
 
 const PrettyError = require('pretty-error');
 
-const session = require('express-session');
-const sessionSecretKey = process.env.SESSION_SECRET_KEY;
 
 const rfr = require('rfr');
 const express = require('express');
