@@ -1,8 +1,9 @@
 const dotenv = require("dotenv");
-const dotenvParseVariables = require("dotenv-parse-variables");
 
-const env = dotenv.config({ path: ".env" }),
-    parsedEnv = dotenvParseVariables(env.parsed);
+
+const env = dotenv.config({ path: ".env" });
+  //  parsedEnv = dotenvParseVariables(env.parsed);
+  const parsedEnv = process.env
 //parsedEnv = dotenvParseVariables(process.env); // to use vscode environment variable for debug
 
 const server = {
