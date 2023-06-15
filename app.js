@@ -8,7 +8,6 @@ const express = require('express');
 const http = require('http');
 const cors =  require('cors');
 const bodyParser = require('body-parser');
-//const logger = require('./shared/logger');
 
 const utils = rfr('/shared/utils');
 const routes = rfr('/routes');
@@ -21,7 +20,7 @@ rfr('/db/index');
 const pe = new PrettyError();
 pe.start();
 
-
+console.log("HHHHH")
 
 
 const app = express();
