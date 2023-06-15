@@ -59,8 +59,8 @@ res.send("Hello")
   server.listen(app.get('port'), function () {
     console.log('App is listening on port ' + config.port + '! Visit localhost:' + config.port + ' in your browser.');
   //  utils.log('Server started successfully on port -->', config.port);
-   routes.bindAllRequests(app);
-   app.use(rfr('/universalRoute.js'));
+  //  routes.bindAllRequests(app);
+  //  app.use(rfr('/universalRoute.js'));
    // notificationModel.reshceduleNotification();
   });
 

@@ -6,7 +6,7 @@ utils = rfr('/shared/utils');
 
 const dbObj = config['database'];
 
-//let pool = mysql.createPool(`mysql://${dbObj.username}:${dbObj.password}@${dbObj.host}/${dbObj.db}?reconnect=true`);
+// let pool = mysql.createPool(`mysql://${dbObj.username}:${dbObj.password}@${dbObj.host}/${dbObj.db}?reconnect=true`);
 
 let pool = mysql.createPool(process.env.CLEARDB_AMBER_URL);
 

@@ -2,16 +2,16 @@ const dotenv = require("dotenv");
 dotenv.config()
 
 
-// const database = {
-//     host: parsedEnv.DB_HOST,
-//     port: parsedEnv.DB_PORT,
-//     db: parsedEnv.DB_NAME,
-//     username: parsedEnv.DB_USER,
-//     password: parsedEnv.DB_PASS,
-//     connectionLimit: parsedEnv.DB_CONNECTION_LIMIT,
-//     idleTimeout: parsedEnv.DB_IDLE_TIMEOUT,
-//     maxIdle: parsedEnv.DB_MAX_IDLE,
-// };
+const database = {
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    db: process.env.DB_NAME,
+    username: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    connectionLimit: process.env.DB_CONNECTION_LIMIT,
+    idleTimeout: process.env.DB_IDLE_TIMEOUT,
+    maxIdle: process.env.DB_MAX_IDLE,
+};
 
 const secret = process.env.SECRET_KEY;
 
@@ -40,7 +40,7 @@ const kroger = {
 const migrationDate = process.env.MIGRATION_DATE;
 
 module.exports = {
-
+    database,
     secret,
     sendgridEmail,
     sendgridKey,
