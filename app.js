@@ -13,7 +13,7 @@ const bodyParser = require('body-parser');
 // const routes = rfr('/routes');
 //const notificationModel = rfr('/models/admin/notification');
 const config = require('./server/config/config.js');
-// rfr('/db/index');
+rfr('/db/index');
 
 
 // Initialize pretty-error
@@ -54,8 +54,6 @@ res.send("Hello")
 })
 
   const server = http.createServer(app);
-  console.log("STARTING-------------------------------------")
-  console.log(process.env.CLEARDB_AMBER_URL)
   server.listen(app.get('port'), function () {
     console.log('App is listening on port ' + config.port + '! Visit localhost:' + config.port + ' in your browser.');
   //  utils.log('Server started successfully on port -->', config.port);
