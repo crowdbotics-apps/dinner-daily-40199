@@ -1,5 +1,5 @@
 
-FROM node:14-alpine
+FROM alpine:3.18
 
 # Install system dependencies
 RUN apk add --no-cache --update   bash   gcc   g++   make   python2   python2-dev   py2-pip   musl-dev   postgresql-dev   git   nodejs-current   nodejs-npm
