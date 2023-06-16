@@ -2,7 +2,7 @@
   "name": "failsafe_bs4",
   "version": "1.0.0",
   "engines": {
-    "node": "16.0.0"
+    "node": "18.x"
   },
   "description": "Crowdbotics Failsafe (React.js)",
   "main": "app.js",
