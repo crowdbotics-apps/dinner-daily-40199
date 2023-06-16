@@ -1,5 +1,5 @@
 const rfr = require('rfr');
-const firebaseBucket = rfr('/firebase/index');
+// const firebaseBucket = rfr('/firebase/index');
 
 const constant = rfr('/shared/constant');
 const config = rfr('/shared/config');
