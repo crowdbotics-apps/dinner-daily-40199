@@ -10,10 +10,10 @@ const cors =  require('cors');
 const bodyParser = require('body-parser');
 
 // const utils = rfr('/shared/utils');
-const routes = rfr('/routes');
+// const routes = rfr('/routes');
 //const notificationModel = rfr('/models/admin/notification');
 const config = require('./server/config/config.js');
-rfr('/db/index');
+// rfr('/db/index');
 
 
 // Initialize pretty-error
