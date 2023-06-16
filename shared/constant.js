@@ -1,5 +1,5 @@
 module.exports = {
-	'DB_NAME': "dinnerdaily",
+	'DB_NAME': "heroku_52b3caaac7494c9",
 	'NO_RESOURCE_FOUND' : "No resource found",
 	'AUTH_FAIL': "Authentication failed",
 	'OOPS_ERROR': "Oops!!! Something went wrong",
