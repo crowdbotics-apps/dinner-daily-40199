@@ -2,7 +2,7 @@
 
 const PrettyError = require('pretty-error');
 
-
+console.log("NODE VERSION ----->>>",process.version)
 const rfr = require('rfr');
 const express = require('express');
 const http = require('http');
