@@ -1,5 +1,6 @@
 const rfr = require('rfr');
 const mysql = require('mysql2/promise');
+const cons = require('consolidate');
 
 const config = rfr('/shared/config');
 // utils = rfr('/shared/utils');
@@ -11,22 +12,45 @@ const dbObj = config['database'];
 //let pool = mysql.createPool(process.env.CLEARDB_AMBER_URL);
 
 //let pool = mysql.createPool('mysql://be2fbda272a899:df8486ac@us-cdbr-east-06.cleardb.net/heroku_52b3caaac7494c9?reconnect=true');
+
+
 let pool = mysql.createPool({
   connectionLimit: 50,
   host: 'us-cdbr-east-06.cleardb.net',
   user: 'be2fbda272a899',
   password: 'df8486ac',
-  database: 'heroku_52b3caaac7494c9',
-  maxIdle: 50
+  port:3306,
+   //database: 'heroku_52b3caaac7494c9',
 })
 
-pool.getConnection((err, connection) => {
-  if (err) {
-    console.log('error----->', err);
-    throw err;
-  }
-  console.log('Database connected successfully');
-});
+pool.on("connection", (connection)=>console.log("success"))
+
+pool.getConnection().then((connection)=>{
+  console.log("POOL SUCESS")
+}).catch((err)=>{
+  console.log("ERROR", err)
+})
+
+
+
+
+// let pool = mysql.createConnection({
+//   connectionLimit: 50,
+//   host: 'us-cdbr-east-06.cleardb.net',
+//   user: 'be2fbda272a899',
+//   password: 'df8486ac',
+//   port:3306,
+//   database: 'heroku_52b3caaac7494c9',
+// })
+
+
+// pool.then((connection)=>{
+//   console.log("Connection successfull")
+// }).catch((err)=>{
+//   console.log("ERROR",err)
+// })
+
+
 
 module.exports = pool;
 
