@@ -1,0 +1,1 @@
+Alter table thedinne_backend.recipes add notes varchar(255) default '';

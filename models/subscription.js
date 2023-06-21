@@ -48,7 +48,7 @@ const getUserSubscriptionStatus = async (req, res, cb) => {
 
             let planDaysLeft = utils.dateDiffInDays(userData['created'], utils.getCurrentDate());
             if (!userData['subscription_plan']) {
-                obj['status'] = planDaysLeft < 14 ? constant['SUBSCRIPTION_STATUS']['FREE'] : constant['SUBSCRIPTION_STATUS']['EXPIRED'];
+                obj['status'] = planDaysLeft < constant['FREE_TRIAL_DAYS'] ? constant['SUBSCRIPTION_STATUS']['FREE'] : constant['SUBSCRIPTION_STATUS']['EXPIRED'];
                 obj['daysLeft'] = (constant['FREE_TRIAL_DAYS'] - planDaysLeft);
                 obj['existingPlan'] = constant['FALSE'];
             } else {
@@ -173,6 +173,7 @@ const createUserSubscription = async (req, res, cb) => {
             }],
             payment_behavior: 'default_incomplete',
             payment_settings: { save_default_payment_method: 'on_subscription' },
+            coupon: reqBody['coupon'] || '',
             expand: ['latest_invoice.payment_intent'],
           });
 
@@ -234,6 +235,7 @@ const updateSubscription = async (req, res, cb) => {
             const updatedSubscription = await stripe.subscriptions.update(subscriptionId,
             {
                 cancel_at_period_end: false,
+                coupon: reqBody['coupon'] || '',
                 items: [{
                     id: subscription.items.data[0].id,
                     price: reqBody['newPriceId'],

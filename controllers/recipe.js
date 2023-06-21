@@ -79,6 +79,13 @@ const recipeImage = (req, res) => {
   recipesModel.recipeImage(req, res, cb);
 }
 
+const updateRecipeNotes =(req,res)=>{
+  let cb = function(result) {
+      utils.sendResponse(res, result);
+    }
+  recipesModel.updateRecipeNotes(req, res, cb);
+}
+
 module.exports = {
   getAllRecipes,
   addRecipe,
@@ -90,5 +97,6 @@ module.exports = {
   updateUserWeekRecipe,
   userRecipes,
   searchRecipe,
-  recipeImage
+  recipeImage,
+  updateRecipeNotes
 }

@@ -197,6 +197,38 @@ const categoryMap = {
     }, {});
   }
 
+  // Function to format user diet plan response to frontend
+const formatDietPlanOptions = (res = []) => {
+  const resObj = {
+    foodPreference: {},
+    dietryNeed: {},
+  };
+  for (let i = 0; i < res.length; i++) {
+    let name = dietPlanMapping[res[i].internal_id];
+    if (res[i].type === 'numeric') {
+      resObj.foodPreference[name] = res[i].value;
+    } else {
+      resObj.dietryNeed[name] = !!res[i].checked;
+    }
+  }
+  const firstRes = res[0] || [];
+  resObj.dietryNeed.heartHealthy = !!firstRes.heart_healthy;
+  resObj.familySize = firstRes.family_size;
+  resObj.state = Number(firstRes.state);
+  resObj.stateName = firstRes.stateName;
+  resObj.store = firstRes.preferred_store_id;
+  resObj.storeName = firstRes.storeName;
+  return resObj;
+};
+
+const ruleTypeMapping = {
+  'tag_names': 'recipeTag',
+  'ingredient_tag_names': 'ingredientTag',
+  'category_ids': 'ingredientCategory',
+  'ingredient_id': 'ingredient',
+  'cooking_type': 'cookingType'
+}
+
 module.exports = {
     dietPlanMapping,
     getPagination,
@@ -213,5 +245,7 @@ module.exports = {
     convertDateTimeToUTC,
     formatDateToDDMMYYYY,
     getMonthIndex,
-    formatRules
+    formatRules,
+    formatDietPlanOptions,
+    ruleTypeMapping
 }

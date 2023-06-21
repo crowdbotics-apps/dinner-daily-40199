@@ -23,10 +23,10 @@ let pool = mysql.createPool({
    //database: 'heroku_52b3caaac7494c9',
 })
 
-pool.on("connection", (connection)=>console.log("success"))
+//pool.on("connection", (connection)=>console.log("Connected with database"))
 
 pool.getConnection().then((connection)=>{
-  console.log("POOL SUCESS")
+  console.log("Database connection pool succeed")
 }).catch((err)=>{
   console.log("ERROR", err)
 })

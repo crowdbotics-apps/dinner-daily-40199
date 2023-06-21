@@ -345,7 +345,7 @@ const _getPasswordResetMailContent = (token, from) => {
   return `<p>Dear User,</p>
   <p>This e-mail is in response to your recent request to ${from === 'forgot' ? 'recover a forgotten' : 'reset your expired'} password. Password security features are in place to ensure the security of your profile information. To reset your password, please click the link below and follow the instructions provided.</p>
   <p>
-    <a href=${"https://dinner-daily-40199.botics.co"}/auth/reset-password?secretId=${token} target='_blank'>${"https://dinner-daily-40199.botics.co"}/auth/reset-password?secretId=${token}</a>
+    <a href=${config.adminURL}/auth/reset-password?secretId=${token} target='_blank'>${config.adminURL}/auth/reset-password?secretId=${token}</a>
   </p>
   <p>This link will remain active for the next 5 minutes.</p>
   <p>Please do not reply to this e-mail.</p>`;

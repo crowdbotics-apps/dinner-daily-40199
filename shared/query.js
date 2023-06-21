@@ -18,6 +18,22 @@ const _whereCondition = (conditionObj, isSearchQuery) => {
     return query;
 }
 
+const _searchCondition = (searchKey, searchTextArr) => {
+    let query = '';
+    if (searchTextArr && searchTextArr.length) {
+        for (let i = 0; i < searchTextArr.length; i++) {
+            if (i === searchTextArr.length - 1) {
+                query += `${searchKey} like '%${searchTextArr[i]}%'`;
+            } else {
+                query += `${searchKey} like '%${searchTextArr[i]}%' or `;
+            }
+        }
+    } else {
+        query += `${searchKey} like '%%'`;
+    }
+    return query;
+}
+
 const _orderQuery = (obj)=>{
     let query = '';
     if (obj.hasOwnProperty('order_key') && obj.hasOwnProperty('order_type')) {
@@ -56,6 +72,23 @@ const searchQuery = (table, searchKey, searchText, columnArr = [], conditionObj 
     return query;
 }
 
+const multipleSearchQuery = (table, searchKey, searchTextArr = [], columnArr = [], conditionObj = {}, paginationObj = {}) => {
+    let query = `SELECT ${columnArr.length ? columnArr.join(', ') : '*'} FROM ${constant['DB_NAME']}.${table} where `;
+    query += `(${_searchCondition(searchKey, searchTextArr)})`;
+    const whereQuery = _whereCondition(conditionObj, true);
+    let orderQuery =  _orderQuery(paginationObj);
+    query += whereQuery;
+    query += orderQuery;
+    return query;
+}
+
+const selectInQuery = (table, searchKey, searchArr, columnArr = [], conditionObj = {}) => {
+    let query = `SELECT ${columnArr.length ? columnArr.join(', ') : '*'} FROM ${constant['DB_NAME']}.${table} where ${searchKey} in (${searchArr.join(', ')})`;
+    const whereQuery = _whereCondition(conditionObj, true);
+    query += whereQuery;
+    return query;
+}
+
 const fetchAdminIngredientsQuery = (paginationObj={},whereCondition={})=>{
     let query = `SELECT i.*, ic.name categoryName FROM ${constant['DB_NAME']}.${constant['DB_TABLE']['INGREDIENTS']} i left join ${constant['DB_NAME']}.${constant['DB_TABLE']['INGREDIENTS_CATEGORY']} ic on i.category_ids = ic.id `
     let orderQuery =  _orderQuery(paginationObj);
@@ -66,9 +99,9 @@ const fetchAdminIngredientsQuery = (paginationObj={},whereCondition={})=>{
 }
 
 const fetchSidesQuery = (recipeId) =>`SELECT crst.recipe_side_item_id, ht.name, crst.hash_tag_id, rst.side, rst.recipe_side_combination_id, rst.id, rsc.recipe_id
-FROM ${constant['DB_TABLE']['CROSS_RECIPE_SIDE_ITEMTAG']} crst
-join ${constant['DB_TABLE']['RECIPE_ITEMS']} rst on rst.id = crst.recipe_side_item_id
-join ${constant['DB_TABLE']['RECIPE_COMBINATIONS']} rsc on rsc.id = rst.recipe_side_combination_id
+FROM ${constant['DB_TABLE']['CROSS_RECIPE_SIDE_ITEM_TAGS']} crst
+join ${constant['DB_TABLE']['RECIPE_SIDE_ITEMS']} rst on rst.id = crst.recipe_side_item_id
+join ${constant['DB_TABLE']['RECIPE_SIDE_COMBINATIONS']} rsc on rsc.id = rst.recipe_side_combination_id
 join ${constant['DB_TABLE']['HASH_TAGS']} ht on ht.id = crst.hash_tag_id
 where ht.type = 2 and rsc.recipe_id = ${recipeId}`;
 
@@ -308,8 +341,10 @@ const fetchUserDietPlanOptions = (userId) => `select name, dp.type,
     join ${constant['DB_NAME']}.${constant['DB_TABLE']['DIET_PLAN_OPTIONS']} dp on dp.id = udp.diet_plan_option_id
     where user_id = ${userId}`;
 
-const fetchRecipesExceptNonSeasonal = (season) => {
-    let query = `SELECT id FROM ${constant['DB_NAME']}.${constant['DB_TABLE']['RECIPES']} where dish_type = 1 and user_id is null and id not in
+const fetchRecipesExceptNonSeasonal = (season, dishType) => {
+    let query = `SELECT id FROM ${constant['DB_NAME']}.${constant['DB_TABLE']['RECIPES']}
+    where dish_type = ${dishType} and user_id is null and (tag_names not like '%dinner party%' or tag_names not like '%dessert%')
+    and id not in
         (SELECT id FROM ${constant['DB_NAME']}.${constant['DB_TABLE']['RECIPES']} where `
         for (let i = 0; i < season.length; i++) {
             if (i === season.length - 1) {
@@ -321,7 +356,61 @@ const fetchRecipesExceptNonSeasonal = (season) => {
     return query;
 };
 
-// select distinct(id) from dinnerdaily.recipes where id in (968, 1, 5, 7, 10) and id not in (select recipe_id from dinnerdaily.recipeingredients where ingredient_id in (39));
+const favoriteRecipeCountQuery = (dishType = 1) => `select r.id from ${constant['DB_NAME']}.${constant['DB_TABLE']['FAVORITES']} f
+join ${constant['DB_NAME']}.${constant['DB_TABLE']['RECIPES']} r on r.id = f.recipe_id and r.dish_type = ${dishType}
+group by f.recipe_id having count(f.recipe_id) > 3;`;
+
+const tieredIngredientSaleQuery = (storeId, recipeArr) => `Select distinct(vw.id), vw.ingredient_id, vw.tier, coalesce(pr.is_on_sale, 0) as is_on_sale
+    from ${constant['DB_NAME']}.${constant["DB_VIEW"]["RECIPE_INGREDIENTS_VIEW"]} vw
+    left join (
+        select distinct(ingredient_id), store_id, Max(is_on_sale) as is_on_sale
+        from ${constant['DB_NAME']}.${constant['DB_TABLE']['PRICES']}  where store_id = ${storeId} and start_date <= CURDATE() AND stop_date >= CURDATE() group by ingredient_id
+    ) pr on pr.ingredient_id = vw.ingredient_id and vw.id in (${recipeArr.join(', ')});`
+
+const usedRecipeQuery = (userId) => `select uwdm.main_recipe_id from ${constant['DB_NAME']}.${constant['DB_TABLE']['USER_WEEK_DAY_MENUS']} uwdm
+    join ${constant['DB_NAME']}.${constant['DB_TABLE']['USER_WEEK_MENUS']} uwm on uwm.id = uwdm.week_menu_id
+    join ${constant['DB_NAME']}.${constant['DB_TABLE']['RECIPES']} r on r.id = uwdm.main_recipe_id
+    where
+        uwm.user_id = ${userId} and
+        uwm.start_date >= CASE
+        WHEN r.tag_names like '%vegetarian%' THEN DATE_SUB(CURDATE(), INTERVAL 6 WEEK)
+        ELSE DATE_SUB(CURDATE(), INTERVAL 8 WEEK) end`;
+
+const usedFirstSideRecipeQuery = (userId) => `select uwdm.first_side_recipe_id as id from ${constant['DB_NAME']}.${constant['DB_TABLE']['USER_WEEK_DAY_MENUS']} uwdm
+    join ${constant['DB_NAME']}.${constant['DB_TABLE']['USER_WEEK_MENUS']} uwm on uwm.id = uwdm.week_menu_id
+    join ${constant['DB_NAME']}.${constant['DB_TABLE']['RECIPES']} r on r.id = uwdm.first_side_recipe_id
+    where
+        uwm.user_id = ${userId} and
+        uwm.start_date >= case
+        when r.tag_names like '%2 step%' then DATE_SUB(CURDATE(), INTERVAL 4 WEEK)
+        when r.tag_names like '%simple%' then DATE_SUB(CURDATE(), INTERVAL 1 WEEK)
+        end`;
+
+const usedSecondSideRecipeQuery = (userId) => `select uwdm.second_side_recipe_id as id from ${constant['DB_NAME']}.${constant['DB_TABLE']['USER_WEEK_DAY_MENUS']} uwdm
+    join ${constant['DB_NAME']}.${constant['DB_TABLE']['USER_WEEK_MENUS']} uwm on uwm.id = uwdm.week_menu_id
+    join ${constant['DB_NAME']}.${constant['DB_TABLE']['RECIPES']} r on r.id = uwdm.second_side_recipe_id
+    where
+        uwm.user_id = ${userId} and
+        uwm.start_date >= case
+        when r.tag_names like '%2 step%' then DATE_SUB(CURDATE(), INTERVAL 4 WEEK)
+        when r.tag_names like '%simple%' then DATE_SUB(CURDATE(), INTERVAL 1 WEEK)
+        end`;
+
+const ingredientBalanceQuery = (recipeArr) => `select category_ids, count(*) as count from ${constant['DB_NAME']}.${constant["DB_VIEW"]["RECIPE_INGREDIENTS_VIEW"]} where id in (${recipeArr.join(', ')}) group by category_ids;`;
+
+const recipeSideItemsQuery = (recipeId) => `select r.number_of_sides, r.id as rid, ht.name, rsi.side, rsc.id from ${constant['DB_NAME']}.${constant['DB_TABLE']['RECIPES']} r
+    join ${constant['DB_NAME']}.${constant['DB_TABLE']['RECIPE_SIDE_COMBINATIONS']} rsc on rsc.recipe_id = r.id
+    join ${constant['DB_NAME']}.${constant['DB_TABLE']['RECIPE_SIDE_ITEMS']} rsi on rsi.recipe_side_combination_id = rsc.id
+    join ${constant['DB_NAME']}.${constant['DB_TABLE']['CROSS_RECIPE_SIDE_ITEM_TAGS']} crsi on crsi.recipe_side_item_id = rsi.id
+    join ${constant['DB_NAME']}.${constant['DB_TABLE']['HASH_TAGS']} ht on ht.id = crsi.hash_tag_id where r.id = ${recipeId};`;
+
+const randomSideDishQuery = (recipePool) => `SELECT id FROM ${constant['DB_NAME']}.${constant['DB_TABLE']['RECIPES']}
+    where (tag_names like '%simple salad%' or tag_names like '%reduced%') and id in (${recipePool}) ORDER BY RAND() LIMIT 1;`;
+
+const getUserCurrentWeekMenuQuery = (userId) => `SELECT * FROM ${constant['DB_NAME']}.${constant['DB_TABLE']['USER_WEEK_MENUS']}
+    WHERE user_id = ${userId} and
+    start_date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+    AND start_date <= CURDATE() + INTERVAL 1 DAY;`
 
 module.exports = {
     selectQuery,
@@ -337,6 +426,8 @@ module.exports = {
     fetchUserWeekMenuQuery,
     fetchSideRecipeQuery,
     searchQuery,
+    multipleSearchQuery,
+    selectInQuery,
     searchRecipeQuery,
     searchUserFavRecipeQuery,
     fetchShoppingIngredientForNewUser,
@@ -352,5 +443,14 @@ module.exports = {
     fetchStoreSpecialQuery,
     updateStoreSpecialQuery,
     fetchUserDietPlanOptions,
-    fetchRecipesExceptNonSeasonal
+    fetchRecipesExceptNonSeasonal,
+    favoriteRecipeCountQuery,
+    tieredIngredientSaleQuery,
+    usedRecipeQuery,
+    usedFirstSideRecipeQuery,
+    usedSecondSideRecipeQuery,
+    ingredientBalanceQuery,
+    recipeSideItemsQuery,
+    randomSideDishQuery,
+    getUserCurrentWeekMenuQuery
 }

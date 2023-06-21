@@ -9,6 +9,7 @@ CREATE TABLE `newRestrictionRuleSets` (
   `comment` varchar(255) NOT NULL DEFAULT '',
   `yaml_key` varchar(50) NOT NULL DEFAULT '',
   `additional_rule` varchar(255) NOT NULL DEFAULT '',
+  `soft` varchar(8) DEFAULT NULL,
   `created` datetime NOT NULL,
   `updated` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)

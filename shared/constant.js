@@ -1,5 +1,5 @@
 module.exports = {
-	'DB_NAME': "heroku_52b3caaac7494c9",
+	'DB_NAME': "dinnerdaily",
 	'NO_RESOURCE_FOUND' : "No resource found",
 	'AUTH_FAIL': "Authentication failed",
 	'OOPS_ERROR': "Oops!!! Something went wrong",
@@ -31,6 +31,7 @@ module.exports = {
 	'PROVIDER_ERROR':`Social provider can't be blank`,
 	'APPLE_ERROR': 'It seems your email is not linked with apple-Id. Please linked your id first, then try to logged in.',
 	'DISH_TYPE': 1,
+	'SIDE_DISH_TYPE': 2,
 	'DISH_STATUS': 3,
 	'TRUE': true,
   'FALSE': false,
@@ -116,9 +117,9 @@ module.exports = {
 		'SHOPPING_CATEGORIES': 'shoppingcategories',
 		'SHOPPING_LISTS': 'shoppinglists',
 		'SHOPPING_LIST_ITEMS': 'shoppinglistitems',
-		'RECIPE_COMBINATIONS':'recipesidecombinations',
-		'RECIPE_ITEMS':'recipesideitems',
-		'CROSS_RECIPE_SIDE_ITEMTAG':'crossrecipesideitemtags',
+		'RECIPE_SIDE_COMBINATIONS':'recipesidecombinations',
+		'RECIPE_SIDE_ITEMS':'recipesideitems',
+		'CROSS_RECIPE_SIDE_ITEM_TAGS':'crossrecipesideitemtags',
 		'PRICES': 'prices',
 		'BONUS_CONTENT': 'bonuscontent',
 		'UPLOAD_CONTENT': 'uploadcontent',
@@ -128,7 +129,8 @@ module.exports = {
 		'NEW_RESTRICTION_RULE_SETS': 'newrestrictionrulesets',
 	},
 	'DB_VIEW': {
-		'SHOPPING_LIST_ITEMS_VIEW': 'shopping_list_items_view'
+		'SHOPPING_LIST_ITEMS_VIEW': 'shopping_list_items_view',
+		'RECIPE_INGREDIENTS_VIEW': 'recipe_ingredients_view'
 	},
 	'STRIPE_EVENT_TYPE': {
 		'PAYMENT_INTENT_SUCCEEDED': 'payment_intent.succeeded',
@@ -136,10 +138,26 @@ module.exports = {
 		'INVOICE_PAYMENT_SUCCEEDED': 'invoice.payment_succeeded',
 		'INVOICE_PAYMENT_FAILED': 'invoice.payment_failed',
   },
-	'DEFAULT_RECIPES': [1, 4, 5, 7, 10, 3, 8, 11, 13, 17, 15, 19, 24],
 	'SEASONAL_RULES': {
 		'COOL WEATHER': '10 Sep - 31 May',
 		'WINTER': '15 Nov - 30 Mar',
 		'SUMMER': '15 May - 30 Sep'
+	},
+	'RULE_KEY': {
+		'MAIN_DISH_RULES': 'mainDishRules',
+		'SIDE_DISH_RULES': 'sideDishRules',
+		'MAIN_AND_SIDE_DISH_RULES': 'mainAndSideDishRules',
+		'MEAL_RULES': 'mealRules'
+	},
+	'RULE_TYPE': {
+		'INGREDIENT_CATEGORY': 'ingredientCategory',
+		'RECIPE_TAG': 'recipeTag',
+		'INGREDIENT_TAG': 'ingredientTag',
+		'INGREDIENT': 'ingredient',
+		'COOKING_TYPE': 'cookingType',
+		'MATCH_ANY': 'matchAny',
+		'MATCH_ALL': 'matchAll',
+		'SATURATED_FAT': 'saturatedFat',
+		'SODIUM': 'sodium'
 	}
 }

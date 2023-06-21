@@ -5,6 +5,8 @@ const constant = rfr('/shared/constant');
 const utils = rfr('/shared/utils');
 const helper = rfr('/shared/helper');
 const dbQuery = rfr('/shared/query');
+const algorithmModel = rfr('/models/algorithm/menuGenerator');
+const userMenuModel = rfr('/models/userMenu');
 
 // Function to format user diet plan option to save in db
 const _formatUserDietOptions = async (userOptions, userId) => {
@@ -54,30 +56,6 @@ const _formatUserDietObj = async (userOptions, userId) => {
   }
 };
 
-// Function to format user diet plan response to frontend
-const _formatRespObj = (res = []) => {
-  const resObj = {
-    foodPreference: {},
-    dietryNeed: {},
-  };
-  for (let i = 0; i < res.length; i++) {
-    let name = helper.dietPlanMapping[res[i].internal_id];
-    if (res[i].type === 'numeric') {
-      resObj.foodPreference[name] = res[i].value;
-    } else {
-      resObj.dietryNeed[name] = !!res[i].checked;
-    }
-  }
-  const firstRes = res[0];
-  resObj.dietryNeed.heartHealthy = !!firstRes.heart_healthy;
-  resObj.familySize = firstRes.family_size;
-  resObj.state = Number(firstRes.state);
-  resObj.stateName = firstRes.stateName;
-  resObj.store = firstRes.preferred_store_id;
-  resObj.storeName = firstRes.storeName;
-  return resObj;
-};
-
 // Function to format user diet plan object for user table
 const _formatUserUpdateObj = reqBody => {
   let updateObj = {};
@@ -96,6 +74,7 @@ const _formatUserUpdateObj = reqBody => {
   return updateObj;
 };
 
+
 // Function to fetch user diet plan
 const getUserDietPlan = async (req, res, cb) => {
   utils.writeInsideFunctionLog('dietPlan', 'getUserDietPlan');
@@ -105,9 +84,9 @@ const getUserDietPlan = async (req, res, cb) => {
   const queryParam = dbQuery.fetchUserQuery(userId);
   await pool
     .query(queryParam)
-    .then(resp => {
-      if (resp[0].length) {
-        const respObj = _formatRespObj(resp[0]);
+    .then(([resp]) => {
+      if (!!resp.length) {
+        const respObj = helper.formatDietPlanOptions(resp);
 
         resObj = Object.assign({ data: respObj }, utils.getSuccessResObj());
         cb(resObj);
@@ -143,6 +122,8 @@ const dietPlanOptions = async (req, res, cb) => {
     conn.query(insertQueryParam, [valuesArr])
       .then(async res => {
         await conn.query('COMMIT');
+        const userMenu = await algorithmModel.createMenu(req.userData);
+        await userMenuModel.insertDataInUserWeekMenu(userId, userMenu, req.body.store, req.body.familySize);
         await conn.release();
         resObj = Object.assign({}, utils.getSuccessResObj());
         resObj['message'] = constant['SUCCESS_MSG'];
@@ -182,6 +163,8 @@ const updateUserDietPlan = async (req, res, cb) => {
       .query(userDietQueryParam)
       .then(async res => {
         await conn.query('COMMIT');
+        const userMenu = await algorithmModel.createMenu(req.userData);
+        await userMenuModel.updateUserWeekDayMenu(userId, userMenu, req.body.store, req.body.familySize);
         await conn.release();
         resObj = Object.assign({}, utils.getSuccessResObj());
         resObj.message = constant.UPDATE_SUCCESS_MSG;
