@@ -114,6 +114,11 @@
             "date": 1686901355310,
             "name": "logs/thedinnerdaily-16Jun2023.log",
             "hash": "bfc9561ca49e02649762cb4ddcfe17373048fc88efaac472a13fab26d60d8db0"
+        },
+        {
+            "date": 1687372874346,
+            "name": "logs/thedinnerdaily-22Jun2023.log",
+            "hash": "f0b0774cca0aafa39c70eb4f75a5021ffbcd85116a084b893b61f2c30ad0291f"
         }
     ],
     "hashType": "sha256"

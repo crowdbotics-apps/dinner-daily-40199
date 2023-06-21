@@ -89,7 +89,7 @@ const addStore = async (req, res, cb) => {
         const { columns, valuesArr } = utils.formatRequestDataForInsert([addData]);
         const queryParam = dbQuery.insertQuery(constant['DB_TABLE']['STORES'], columns);
         await pool.query(queryParam, [valuesArr]).then(async(resp) => {
-            if(req.body.state.length){
+            if(req.body?.state.length){
                 await _saveStateData(req.body?.state,resp[0].insertId);
             }
             const responseData = {...req.body,id:resp[0].insertId};
@@ -118,7 +118,7 @@ const updateStore = async (req, res, cb) => {
        const updateData = _formateStoreData(req.body, storeId);
        const queryParam = dbQuery.updateQuery(constant['DB_TABLE']['STORES'], updateData, {id: storeId});
        await pool.query(queryParam).then(async (resp) => {
-        if(req.body.state.length){
+        if(req.body?.state.length){
             const queryParamState = dbQuery.deleteQuery(constant['DB_TABLE']['STATE_STORE_MAPPING'], {store_id:storeId});
             await pool.query(queryParamState);
             await _saveStateData(req.body?.state, storeId);

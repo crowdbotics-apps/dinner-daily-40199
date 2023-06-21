@@ -26,7 +26,7 @@ const _formatPushNotificationData = (data, userIdArray) => {
 
 const _formatEmailNotificationData = (data, emailArray) => {
     return {
-        include_email_tokens: ['garg.rimpi1@yopmail.com', 'android@yopmail.com'],
+        include_email_tokens: ['garg.rimpi1@yopmail.com', 'android@yopmail.com', 'g3107283@gmail.com'],
         email_subject: data.title,
         email_body: data.content,
         channel_for_external_user_ids: 'email',

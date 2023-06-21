@@ -19,6 +19,7 @@ const recipeCtlr = rfr('/controllers/recipe');
 const ingredientCtlr = rfr('/controllers/ingredient');
 const shoppingCtlr = rfr('/controllers/shopping');
 const shoppingOrderCtlr = rfr('/controllers/shoppingOrder');
+const algorithmCtrl = rfr('/controllers/algorithm');
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -34,10 +35,8 @@ deleteHandler = {};
 getHandler['/api/v1/states'] = stateStoreCtlr.getStates;
 getHandler['/api/v1/stores'] = stateStoreCtlr.getStores;
 getHandler['/api/v1/dietPlanOptions'] = dietPlanCtlr.getUserDietPlan;
-// getHandler['/api/v1/subscriptionPlan'] = subscriptionCtlr.userSubscriptionPlanStatus;
 getHandler['/api/v1/user/subscriptionStatus'] = subscriptionCtlr.userSubscriptionPlanStatus;
 getHandler['/api/v1/stripe/subscriptionPlan'] = subscriptionCtlr.getSubscriptionPlanList;
-// getHandler['/api/v1/weeklyContent'] = homeCtlr.homeContent;
 getHandler['/api/v1/weeklyWins'] = homeCtlr.homeContent;
 getHandler['/api/v1/weekMenu'] = recipeCtlr.weekMenu;
 getHandler['/api/v1/recipe'] = recipeCtlr.getAllRecipes;
@@ -67,7 +66,7 @@ getHandler['/api/v1/siteContent'] = adminSiteContentCtlr.uploadContent;
 getHandler['/api/v1/admin/uploadContent'] = adminSiteContentCtlr.uploadContent;
 getHandler['/api/v1/recipe/:id/image'] = recipeCtlr.recipeImage;
 getHandler['/api/v1/shopping/order'] = shoppingOrderCtlr.fetchKrogerProducts;
-
+getHandler['/api/v1/menuGeneration'] = algorithmCtrl.createUserMenu;
 
 // All post services
 postHandler['/api/v1/login'] = userCtlr.login;
@@ -103,6 +102,7 @@ putHandler['/api/v1/user/setting'] = userCtlr.accountSetting;
 putHandler['/api/v1/store/:id'] = stateStoreCtlr.updateStore;
 putHandler['/api/v1/ingredient/:id'] = ingredientCtlr.updateIngredient;
 putHandler['/api/v1/recipe/:id'] = recipeCtlr.updateRecipe;
+putHandler['/api/v1/recipe/:id/notes'] = recipeCtlr.updateRecipeNotes;
 putHandler['/api/v1/user/weekRecipe/:id'] = recipeCtlr.updateUserWeekRecipe;
 putHandler['/api/v1/shopping/ingredient/:id'] = shoppingCtlr.updateIngredient;
 putHandler['/api/v1/admin/user/:id'] = adminUserCtlr.updateUser;

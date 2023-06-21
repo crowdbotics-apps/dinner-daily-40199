@@ -60,12 +60,12 @@ const _formatIngredientsData = async (ingredients, recipeId, userId, cond) => {
 
 const _commonRecipeSides = async (sideData, side, combinationid) => {
     const { columns, valuesArr } = utils.formatRequestDataForInsert([{ side: side, recipe_side_combination_id: combinationid, created: helper.getDateAndTime() }]);
-    const insertQueryParam = dbQuery.insertQuery(constant['DB_TABLE']['RECIPE_ITEMS'], columns);
+    const insertQueryParam = dbQuery.insertQuery(constant['DB_TABLE']['RECIPE_SIDE_ITEMS'], columns);
     await pool.query(insertQueryParam, [valuesArr]).then(async (resp) => {
         const recipe_side_item_id = resp[0].insertId;
         for (let m = 0; m < sideData.length; m++) {
             const { columns, valuesArr } = utils.formatRequestDataForInsert([{ recipe_side_item_id: recipe_side_item_id, hash_tag_id: sideData[m] }]);
-            const insertQueryParam = dbQuery.insertQuery(constant['DB_TABLE']['CROSS_RECIPE_SIDE_ITEMTAG'], columns);
+            const insertQueryParam = dbQuery.insertQuery(constant['DB_TABLE']['CROSS_RECIPE_SIDE_ITEM_TAGS'], columns);
             await pool.query(insertQueryParam, [valuesArr]);
         }
 
@@ -79,7 +79,7 @@ const _commonRecipeSides = async (sideData, side, combinationid) => {
 const _formatSidesData = async (sideData, recipeId) => {
     for (let i = 0; i < sideData.length; i++) {
         const { columns, valuesArr } = utils.formatRequestDataForInsert([{ recipe_id: recipeId, created: helper.getDateAndTime() }]);
-        const insertQueryParam = dbQuery.insertQuery(constant['DB_TABLE']['RECIPE_COMBINATIONS'], columns);
+        const insertQueryParam = dbQuery.insertQuery(constant['DB_TABLE']['RECIPE_SIDE_COMBINATIONS'], columns);
         await pool.query(insertQueryParam, [valuesArr]).then(async (resp) => {
             const combinationid = resp[0].insertId;
             if (sideData[i]?.side_0?.length) {
@@ -210,58 +210,9 @@ const _fetchRecipeSides = async (recipesData, userId) => {
     return recipesData;
 }
 
-const _formatDataForShoppingList = (weekMenuId, familySize) => {
-    let obj = {
-        'updated': helper.getDateAndTime(),
-        'created': helper.getDateAndTime(),
-        'user_week_menu_id': weekMenuId,
-        'family_size': familySize,
-        'fulfillment_initialized': 0
-    }
-    const { columns, valuesArr } = utils.formatRequestDataForInsert([obj]);
-    const queryParam = dbQuery.insertQuery(constant['DB_TABLE']['SHOPPING_LISTS'], columns);
-    return { shoppingListQueryParam: queryParam, shoppingListValuesArr: valuesArr };
-}
-
-const _formatDataForUserWeekDayMenu = (weekMenuId) => {
-    let recipeIds = [1, 4, 5, 7, 10];
-    let sideDish = {
-        1: [3, 8],
-        4: [11],
-        5: [13, 15],
-        7: [17, 19],
-        10: [24]
-    }
-    let weekDayMenu = [];
-    for (let i = 0; i < 5; i++) {
-        let recipeId = recipeIds[i];
-        let obj = {
-            'week_menu_id': weekMenuId,
-            'main_recipe_id': recipeId,
-            'first_side_recipe_id': sideDish[recipeId][0],
-            'second_side_recipe_id': sideDish[recipeId][1] || null,
-            'created': helper.getDateAndTime(),
-            'original_main_recipe_id': recipeId,
-            'original_first_side_recipe_id': sideDish[recipeId][0],
-            'original_second_side_recipe_id': sideDish[recipeId][1] || null,
-            'week_day_number': 1,
-            'week_day_date': helper.getDateAndTime()
-        }
-        weekDayMenu.push(obj);
-    }
-    const { columns, valuesArr } = utils.formatRequestDataForInsert(weekDayMenu);
-    const queryParam = dbQuery.insertQuery(constant['DB_TABLE']['USER_WEEK_DAY_MENUS'], columns);
-    return { queryParam, valuesArr };
-}
-
-const _fetchAndFormatRecIngredients = async (userId, storeId, shoppingListId = 0) => {
+const _fetchAndFormatRecIngredients = async (userId, storeId) => {
     //fetch data for shopping list item
     let selectQueryParam = dbQuery.fetchShoppingIngredient(userId, storeId);
-    if (shoppingListId) {
-        // For now default recipe ingredient for new user. Removed once logic is placed
-        const recipeIds = constant['DEFAULT_RECIPES'];
-        selectQueryParam = dbQuery.fetchShoppingIngredientForNewUser(recipeIds, storeId);
-    }
     const [rows] = await pool.query(selectQueryParam);
     rows.forEach(row => {
         row['type'] = 1;
@@ -269,7 +220,7 @@ const _fetchAndFormatRecIngredients = async (userId, storeId, shoppingListId = 0
         row['checked_off'] = 0;
         row['dish_type'] = 1;
         row['is_on_sale'] = row['is_on_sale'] || 0;
-        row['shopping_list_id'] = row['shopping_list_id'] || shoppingListId;
+        row['shopping_list_id'] = row['shopping_list_id'];
         row['formatted_amount'] = `${utils.formatAmount(row['amount'])}${row['name']}`;
         delete row['name'];
     });
@@ -277,56 +228,6 @@ const _fetchAndFormatRecIngredients = async (userId, storeId, shoppingListId = 0
     let { columns: shoppingListItemsColumns, valuesArr: shoppingListItemsValuesArr } = utils.formatRequestDataForInsert(rows);
     const shoppingListItemsQueryParam = dbQuery.insertQuery(constant['DB_TABLE']['SHOPPING_LIST_ITEMS'], shoppingListItemsColumns);
     return { shoppingListItemsQueryParam, shoppingListItemsValuesArr };
-}
-
-const _insertDataInUserWeekMenu = async (userId, storeId, familySize = 1) => {
-    let selectQueryParam = dbQuery.selectQuery(constant['DB_TABLE']['USER_WEEK_MENUS'], [], { user_id: userId });
-    const weekMenuData = helper.weekMenu;
-    weekMenuData['user_id'] = userId;
-    let { columns, valuesArr } = utils.formatRequestDataForInsert([weekMenuData]);
-    const insertQueryParam = dbQuery.insertQuery(constant['DB_TABLE']['USER_WEEK_MENUS'], columns);
-    const conn = await pool.getConnection();
-    try {
-        await conn.query('START TRANSACTION');
-        return conn.query(selectQueryParam)
-            .then(async wRes => {
-                if (!wRes[0].length) {
-                    return await conn.query(insertQueryParam, [valuesArr]);
-                } else {
-                    return true;
-                }
-            })
-            .then(async res => {
-                if (Array.isArray(res)) {
-                    //insert data in user week day menu table
-                    const { queryParam, valuesArr } = _formatDataForUserWeekDayMenu(res[0]['insertId']);
-                    conn.query(queryParam, [valuesArr]);
-                    //insert data in shopping list table
-                    const { shoppingListQueryParam, shoppingListValuesArr } = _formatDataForShoppingList(res[0]['insertId'], familySize);
-                    return await conn.query(shoppingListQueryParam, [shoppingListValuesArr]);
-                }
-                return true;
-            }).then(async sRes => {
-                if (Array.isArray(sRes)) {
-                    let { shoppingListItemsQueryParam, shoppingListItemsValuesArr } = await _fetchAndFormatRecIngredients(userId, storeId, sRes[0]['insertId']);
-                    return await conn.query(shoppingListItemsQueryParam, [shoppingListItemsValuesArr]);
-                }
-            }).then(async resp => {
-                await conn.query('COMMIT');
-                await conn.release();
-            })
-            .catch(async err => {
-                await conn.query('ROLLBACK');
-                await conn.release();
-                utils.writeErrorLog('recipe', '_insertDataInUserWeekMenu', 'Error while saving data in user week menu and shopping list table', err);
-                throw err;
-            });
-    } catch (error) {
-        await conn.query('ROLLBACK');
-        await conn.release();
-        utils.writeErrorLog('recipe', '_insertDataInUserWeekMenu', 'Error during saving data in user week menu', error);
-        throw error;
-    }
 }
 
 //Common function to fetch recipes their ingredients and side recipes from database
@@ -346,13 +247,13 @@ const _fetchRecipes = async (queryParam, userId) => {
 
 const _deleteRecipeSide = async (recipeId, queryData) => {
     try {
-        const queryParamFirstTable = dbQuery.deleteQuery(constant['DB_TABLE']['RECIPE_COMBINATIONS'], { recipe_id: recipeId });
+        const queryParamFirstTable = dbQuery.deleteQuery(constant['DB_TABLE']['RECIPE_SIDE_COMBINATIONS'], { recipe_id: recipeId });
         await pool.query(queryParamFirstTable).then(async (resp) => {
             const recipe_side_combination_id = queryData?.rscid?.split(",");
-            const queryParamSecondTable = dbQuery.deleteMultipleQuery(constant['DB_TABLE']['RECIPE_ITEMS'], 'recipe_side_combination_id', recipe_side_combination_id);
+            const queryParamSecondTable = dbQuery.deleteMultipleQuery(constant['DB_TABLE']['RECIPE_SIDE_ITEMS'], 'recipe_side_combination_id', recipe_side_combination_id);
             await pool.query(queryParamSecondTable).then(async (resp) => {
                 const recipe_side_item_id = queryData?.rsid?.split(",");
-                const queryParamThirdTable = dbQuery.deleteMultipleQuery(constant['DB_TABLE']['CROSS_RECIPE_SIDE_ITEMTAG'], 'recipe_side_item_id', recipe_side_item_id);
+                const queryParamThirdTable = dbQuery.deleteMultipleQuery(constant['DB_TABLE']['CROSS_RECIPE_SIDE_ITEM_TAGS'], 'recipe_side_item_id', recipe_side_item_id);
                 await pool.query(queryParamThirdTable);
             }).catch((error) => {
                 utils.writeErrorLog('recipe', '_deleteRecipeSide', 'Error while deleting recipes cross recipe side item tags data', error);
@@ -513,7 +414,6 @@ const weekMenu = async (req, res, cb) => {
     let resObj = Object.assign({}, utils.getErrorResObj());
     try {
         let userId = req.userData.id;
-        await _insertDataInUserWeekMenu(userId, req.userData['preferred_store_id'], req.userData['family_size']);
         let queryParam = dbQuery.fetchUserWeekMenuQuery(userId);
         const recipesData = await _fetchRecipes(queryParam, userId);
         let resObj = Object.assign({ data: recipesData }, utils.getSuccessResObj());
@@ -654,7 +554,7 @@ const searchRecipe = async (req, res, cb) => {
     const paginationObj = helper.getPagination(req.query?.page, req.query?.pageSize, req.query?.sortField, req.query?.sortValue);
     let queryParam = dbQuery.searchRecipeQuery(storeId, userId, searchText, dishType, paginationObj);
     if (searchType === 'favorite') {
-        queryParam = dbQuery.searchUserFavRecipeQuery(storeId, userId, searchText, dishType, paginationObj);
+        queryParam = dbQuery.searchUserFavRecipeQuery(storeId, req.userData.id, searchText, dishType, paginationObj);
     }
     pool.query(queryParam)
     .then(([resp]) => {
@@ -688,7 +588,6 @@ const recipeImage = async (req, res, cb) => {
     utils.writeInsideFunctionLog("recipe", "recipeImage", recipeId);
     let resObj = Object.assign({}, utils.getErrorResObj());
 
-    // let queryParam = dbQuery.fetchRecipeImage(recipeId);
     let queryParam = dbQuery.selectQuery(constant['DB_TABLE']['RECIPES'], ['media_id'], {id: recipeId});
     pool.query(queryParam)
     .then(async ([resp]) => {
@@ -711,6 +610,25 @@ const recipeImage = async (req, res, cb) => {
     });
 }
 
+//Function to add/update recipe notes
+const updateRecipeNotes = async (req, res, cb) => {
+    const recipeId = req.params.id;
+    utils.writeInsideFunctionLog("recipe", "recipeImage", recipeId);
+    let resObj = Object.assign({}, utils.getErrorResObj());
+
+    let queryParam = dbQuery.updateQuery(constant['DB_TABLE']['RECIPES'], {notes: req.body.notes || ''}, {id: recipeId});
+    pool.query(queryParam)
+    .then(async ([resp]) => {
+        resObj = Object.assign({}, utils.getSuccessResObj());
+        cb(resObj);
+    }).catch(err => {
+        resObj['message'] = constant['OOPS_ERROR'];
+        resObj['data'] = err.message || err;
+        utils.writeErrorLog('recipe', 'updateRecipeNotes', 'Error while updating recipe notes in database', err);
+        cb(resObj);
+    });
+}
+
 module.exports = {
     getAllRecipe,
     addRecipe,
@@ -722,5 +640,6 @@ module.exports = {
     updateUserWeekRecipe,
     userRecipes,
     searchRecipe,
-    recipeImage
+    recipeImage,
+    updateRecipeNotes
 }
