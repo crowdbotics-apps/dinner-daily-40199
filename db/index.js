@@ -44,13 +44,5 @@ pool.getConnection().then((connection)=>{
 // })
 
 
-// pool.then((connection)=>{
-//   console.log("Connection successfull")
-// }).catch((err)=>{
-//   console.log("ERROR",err)
-// })
-
-
-
 module.exports = pool;
 
