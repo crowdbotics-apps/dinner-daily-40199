@@ -31,7 +31,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-
+app.use(express.static('client/build'));
 
   app.use(cors({origin:'*'}));
   app.use(bodyParser.json({limit: '500mb'})); // support json encoded bodies
@@ -47,11 +47,6 @@ app.use(bodyParser.urlencoded({
     res.setHeader('Cache-Control', 'no-cache');
     next();
   });
-
- 
-app.get("/hello",(req, res)=>{
-res.send("Hello")
-})
 
   const server = http.createServer(app);
   server.listen(app.get('port'), function () {

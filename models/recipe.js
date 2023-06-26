@@ -232,9 +232,8 @@ const _fetchAndFormatRecIngredients = async (userId, storeId) => {
 
 //Common function to fetch recipes their ingredients and side recipes from database
 const _fetchRecipes = async (queryParam, userId) => {
-    utils.writeInsideFunctionLog("recipe", "_fetchRecipes");
-    return await pool.query(queryParam).then(async (results) => {
-        const recipesData = results[0];
+    utils.writeInsideFunctionLog("recipe", "_fetchRecipes", queryParam);
+    return await pool.query(queryParam).then(async ([recipesData]) => {
         const recipeWithIngredients = await _fetchRecipeIngredients(recipesData);
         const recipeWithSides = await _fetchRecipeSides(recipeWithIngredients, userId);
         return recipeWithSides;
@@ -410,11 +409,12 @@ const deleteRecipe = async (req, res, cb) => {
 
 //Function to give user week menu
 const weekMenu = async (req, res, cb) => {
-    utils.writeInsideFunctionLog("recipe", "weekMenu");
+    utils.writeInsideFunctionLog("recipe", "weekMenu", req.query);
     let resObj = Object.assign({}, utils.getErrorResObj());
     try {
         let userId = req.userData.id;
-        let queryParam = dbQuery.fetchUserWeekMenuQuery(userId);
+        let week = req.query.week;
+        let queryParam = dbQuery.fetchUserWeekMenuQuery(userId, week);
         const recipesData = await _fetchRecipes(queryParam, userId);
         let resObj = Object.assign({ data: recipesData }, utils.getSuccessResObj());
         cb(resObj);
@@ -553,6 +553,9 @@ const searchRecipe = async (req, res, cb) => {
     const userId = searchType === 'personal' ? req.userData.id : null;
     const paginationObj = helper.getPagination(req.query?.page, req.query?.pageSize, req.query?.sortField, req.query?.sortValue);
     let queryParam = dbQuery.searchRecipeQuery(storeId, userId, searchText, dishType, paginationObj);
+    if (searchType === 'all' && searchText === '' && dishType == 1) {
+        queryParam = dbQuery.selectWeekMenuAlternativesQuery(req.userData.id);
+    }
     if (searchType === 'favorite') {
         queryParam = dbQuery.searchUserFavRecipeQuery(storeId, req.userData.id, searchText, dishType, paginationObj);
     }
@@ -568,7 +571,7 @@ const searchRecipe = async (req, res, cb) => {
         } else {
             const existingItem = respArr.find(i => i.id === item.id);
             if (existingItem.is_on_sale === 0 && item.is_on_sale === 1) {
-            existingItem.is_on_sale = 1;
+                existingItem.is_on_sale = 1;
             }
         }
         });

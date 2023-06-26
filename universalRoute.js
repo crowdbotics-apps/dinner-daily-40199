@@ -5,11 +5,15 @@ const utils = rfr("/shared/utils");
 const constant = rfr("/shared/constant");
 
 // When no route match with defined routes in route.js for get request
+// router.get('*', function(req, res) {
+//   let resObj = Object.assign({}, utils.getErrorResObj());
+//   resObj['code'] = constant['RES_OBJ']['CODE']['NOT_FOUND'];
+//   resObj['message'] = constant['RES_OBJ']['MSG']['NOT_FOUND'];
+//   res.status(404).send(resObj);
+// });
+
 router.get('*', function(req, res) {
-  let resObj = Object.assign({}, utils.getErrorResObj());
-  resObj['code'] = constant['RES_OBJ']['CODE']['NOT_FOUND'];
-  resObj['message'] = constant['RES_OBJ']['MSG']['NOT_FOUND'];
-  res.status(404).send(resObj);
+  res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
 });
 
 // When no route match with defined routes in route.js for post request

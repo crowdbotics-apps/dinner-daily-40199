@@ -229,6 +229,46 @@ const ruleTypeMapping = {
   'cooking_type': 'cookingType'
 }
 
+const defaultMenuWithSideRecipes = [
+  {
+      "id": 126,
+      "firstSideId": 79
+  },
+  {
+      "id": 206,
+      "firstSideId": 958,
+      "secSideId": 122
+  },
+  {
+      "id": 1292,
+      "firstSideId": 1045
+  },
+  {
+      "id": 1282,
+      "firstSideId": 52,
+      "secSideId": 51
+  },
+  {
+      "id": 1442,
+      "firstSideId": 70
+  },
+  {
+      "id": 1537
+  },
+  {
+      "id": 1302
+  },
+  {
+      "id": 1291
+  },
+  {
+      "id": 1485
+  },
+  {
+      "id": 1478
+  }
+]
+
 module.exports = {
     dietPlanMapping,
     getPagination,
@@ -247,5 +287,6 @@ module.exports = {
     getMonthIndex,
     formatRules,
     formatDietPlanOptions,
-    ruleTypeMapping
+    ruleTypeMapping,
+    defaultMenuWithSideRecipes
 }

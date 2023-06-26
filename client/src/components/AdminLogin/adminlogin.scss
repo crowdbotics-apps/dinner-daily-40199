@@ -1,0 +1,118 @@
+/* Common */
+.admin-login {
+    background: #FFFFFF;
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+
+    .admin-form-wrapper {
+        background: #FFFFFF;
+        box-shadow: 0px 12px 20px rgba(48, 48, 48, 0.2);
+        border-radius: 40px;
+        width: 872px;
+        // height: 635px;
+
+        .admin-logo {
+            position: absolute;
+            width: 287.86px;
+            height: 206.14px;
+            left: 405px;
+            top: 35px;
+        }
+
+        .admin-lower-row {
+            // gap: 40px;
+
+            .left-col {
+                padding: 50px 50px 50px 100px;
+                text-align: left;
+
+                .left-first-heading {
+                    font-family: 'Open Sans';
+                    font-style: normal;
+                    font-weight: 400;
+                    font-size: 18px;
+                    line-height: 24px;
+                    color: #202020;
+                }
+
+                .left-sec-heading {
+                    font-family: 'Open Sans';
+                    font-style: normal;
+                    font-weight: 400;
+                    font-size: 24px;
+                    line-height: 32px;
+                    color: #202020;
+                }
+
+                .left-body {
+                    margin-top: 32px;
+                    font-family: 'Open Sans';
+                    font-style: normal;
+                    font-weight: 300;
+                    font-size: 16px;
+                    line-height: 26px;
+                    color: #202020;
+                }
+            }
+
+            .right-col {
+                padding: 30px 70px;
+
+                .inputdiv {
+                    margin-bottom: -10px;
+                }
+
+                .text-label {
+                    font-family: 'Open Sans';
+                    font-style: normal;
+                    font-weight: 400;
+                    font-size: 16px;
+                    line-height: 22px;
+                    display: flex;
+                    align-items: center;
+                    color: #202020;
+                }
+
+                .right-col-heading {
+                    font-family: 'Open Sans';
+                    font-style: normal;
+                    font-weight: 400;
+                    font-size: 20px;
+                    line-height: 27px;
+                    display: flex;
+                    align-items: center;
+                    letter-spacing: -0.02em;
+                    color: #202020;
+                    margin-bottom: 30px;
+                }
+
+                .forgot-password {
+                    text-align: left;
+
+                    .forgotpassword-txt {
+                        margin-left: 10px;
+                        font-family: 'Open Sans';
+                        font-style: normal;
+                        font-weight: 400;
+                        font-size: 12px;
+                        line-height: 16px;
+                        display: flex;
+                        align-items: center;
+                        text-decoration-line: underline;
+                        color: #202020;
+                    }
+                }
+
+                .login-btn {
+                    color: #FFFFFF;
+                    margin: 30px 0px;
+                    background: #56BAB4;
+                    box-shadow: 0px 30px 40px rgba(86, 186, 180, 0.25);
+                    border-radius: 100px !important;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,88 @@
+.add-new-recipe-modal {
+    .body-heading1 {
+        font-family: 'Open Sans';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 20px;
+        color: #444444;
+    }
+
+    .ingredients-table {
+
+        .ant-table-thead>tr {
+            background: rgba(86, 186, 180, 0.2);
+            border: 1px solid #56BAB4;
+            box-shadow: 0px 4px 4px rgba(86, 186, 180, 0.2);
+            backdrop-filter: blur(2px);
+            border-radius: 10px;
+        }
+
+        th {
+            background: rgba(86, 186, 180, 0.2) !important;
+            font-family: 'Open Sans';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 24px;
+            // text-align: center !important;
+            color: #000000;
+        }
+
+        .ant-table-row {
+            // text-align: center !important;
+            border-radius: 10px;
+            box-shadow: 0px 4px 4px rgba(86, 186, 180, 0.2);
+            backdrop-filter: blur(2px);
+            margin: 12px 02px;
+
+            td {
+                background: #FFFFFF;
+
+            }
+        }
+    }
+
+    .edit-del-cont {
+        display: flex;
+        // justify-content: space-evenly;
+        gap: 10px;
+    }
+
+    .body-heading1-wrapper {
+        display: flex;
+        justify-content: space-between;
+
+        .category-listing {
+            font-family: 'Open Sans';
+            font-style: normal;
+            font-weight: 600;
+            font-size: 16px;
+            line-height: 24px;
+            display: flex;
+            align-items: center;
+            color: #444444;
+        }
+
+        .downarrow {
+            cursor: pointer;
+        }
+    }
+
+    .add-user-btn {
+        display: flex;
+        background: #56BAB4;
+        box-shadow: 0px 30px 40px rgba(86, 186, 180, 0.25);
+        border-radius: 100px;
+        border-color: #56BAB4;
+        font-family: 'Montserrat';
+        font-style: normal;
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 16px;
+        color: #FFFFFF;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+}

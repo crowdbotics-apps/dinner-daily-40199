@@ -1,4 +1,4 @@
-INSERT INTO thedinne_backend.uploadContent
+INSERT INTO heroku_52b3caaac7494c9.uploadContent
 (content_type, title, content, created, updated)
 VALUES
 ("Testimonials", "Testimonials", "Testimonials", now(), null),

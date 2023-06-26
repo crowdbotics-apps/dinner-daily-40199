@@ -1,4 +1,4 @@
-INSERT INTO dinnerdaily.newbalancerulesets(yaml_key, created, type, rule_id, value, comment, soft) values
+INSERT INTO heroku_52b3caaac7494c9.newbalancerulesets(yaml_key, created, type, rule_id, value, comment, soft) values
 ('mainDishRules', now(), 'ingredientCategory', '2140,2279,2413,2421', '2', 'ground meats', null),
 ('mainDishRules', now(), 'ingredientCategory', '6319', '1', 'apples', null),
 ('mainDishRules', now(), 'ingredientCategory', '7110', '1', 'potatoes', 'true'),
@@ -178,10 +178,10 @@ INSERT INTO dinnerdaily.newbalancerulesets(yaml_key, created, type, rule_id, val
 ('mainDishRules', now(), 'recipeTag', 'similar roasted brussell sprouts with farro', '1', 'similar', null),
 ('mainDishRules', now(), 'recipeTag', 'exclude', '0', '', null);
 
-INSERT INTO dinnerdaily.newbalancerulesets(yaml_key, created, type, additional_rule, value, comment, soft) values
+INSERT INTO heroku_52b3caaac7494c9.newbalancerulesets(yaml_key, created, type, additional_rule, value, comment, soft) values
 ('mainDishRules', now(), 'matchAny', '[{"type":"cookingType","id":"4"},{"type":"cookingType","id":"3"}]', '4', '"bake" and "broil/grill"', null);
 
-INSERT INTO dinnerdaily.newbalancerulesets(yaml_key, created, type, rule_id, value, comment, soft) values
+INSERT INTO heroku_52b3caaac7494c9.newbalancerulesets(yaml_key, created, type, rule_id, value, comment, soft) values
 ('mainAndSideDishRules', now(), 'ingredientCategory', '7110', '2', 'potatoes', null),
 ('mainAndSideDishRules', now(), 'ingredientCategory', '7340,7110', '3', 'sweet potatoes & potatoes together', null),
 ('mainAndSideDishRules', now(), 'ingredientCategory', '7211,7212,7213,7214,7216', '3', 'leafy greens&lettuce', 'true'),
@@ -201,7 +201,7 @@ INSERT INTO dinnerdaily.newbalancerulesets(yaml_key, created, type, rule_id, val
 ('mainAndSideDishRules', now(), 'ingredientCategory', '8420', '3', 'all salsa', null);
 
 
-INSERT INTO dinnerdaily.newbalancerulesets(yaml_key, created, type, rule_id, value, comment, soft) values
+INSERT INTO heroku_52b3caaac7494c9.newbalancerulesets(yaml_key, created, type, rule_id, value, comment, soft) values
 ('sideDishRules', now(), 'ingredientCategory', '7222', '1', 'Broccoli: 7222 <= 1 in total, and only 1 of those can be tagged "simple"', null),
 ('sideDishRules', now(), 'ingredientCategory', '7224', '1', 'Green Beans: 7224 <= 1 in total, and only 1 of those can be tagged "simple"', null),
 ('sideDishRules', now(), 'ingredientCategory', '7310', '1', 'Carrots: 7310 <= 1 in total, and only 1 of those can be tagged "simple"', null),
@@ -235,7 +235,7 @@ INSERT INTO dinnerdaily.newbalancerulesets(yaml_key, created, type, rule_id, val
 ('sideDishRules', now(), 'ingredientCategory', '8421', '1', 'red salsa', null),
 ('sideDishRules', now(), 'ingredientCategory', '8423', '1', 'green salsa', null);
 
-INSERT INTO dinnerdaily.newbalancerulesets(yaml_key, created, type, additional_rule, value, comment, soft) values
+INSERT INTO heroku_52b3caaac7494c9.newbalancerulesets(yaml_key, created, type, additional_rule, value, comment, soft) values
 ('sideDishRules', now(), 'matchAll', '[{ "type": "ingredientCategory", "id": "7222" }, { "type": "recipeTag", "id": "simple" }]', '1', 'Broccoli: 7222 <= 1 in total, and only 1 of those can be tagged "simple"', null),
 ('sideDishRules', now(), 'matchAll', '[{ "type": "ingredientCategory", "id": "7224" }, { "type": "recipeTag", "id": "simple" }]', '1', 'Green Beans: 7224 <= 1 in total, and only 1 of those can be tagged "simple"', null),
 ('sideDishRules', now(), 'matchAll', '[{ "type": "ingredientCategory", "id": "7310" }, { "type": "recipeTag", "id": "simple" }]', '1', 'Carrots: 7310 <= 1 in total, and only 1 of those can be tagged "simple"', null),
@@ -244,7 +244,7 @@ INSERT INTO dinnerdaily.newbalancerulesets(yaml_key, created, type, additional_r
 ('sideDishRules', now(), 'matchAll', '[{ "type": "ingredientCategory", "id": "7110" }, { "type": "recipeTag", "id": "simple" }]', '1', 'Potatoes: 7110 <= 2 in total, and only 1 of those can be tagged “simple”', null),
 ('sideDishRules', now(), 'matchAll', '[{ "type": "ingredientCategory", "id": "7513" }, { "type": "recipeTag", "id": "simple" }]', '1', 'Cauliflower: 7513 <= 1 in total, and only 1 of those can be tagged "simple"', null);
 
-INSERT INTO dinnerdaily.newbalancerulesets(yaml_key, created, type, rule_id, value, comment, soft) values
+INSERT INTO heroku_52b3caaac7494c9.newbalancerulesets(yaml_key, created, type, rule_id, value, comment, soft) values
 ('mealRules', now(), 'ingredientCategory', '7216', '1', 'lettuce', null),
 ('mealRules', now(), 'ingredientCategory', '7221', '1', 'asparagus', null),
 ('mealRules', now(), 'ingredientCategory', '7222', '1', 'broccoli', null),

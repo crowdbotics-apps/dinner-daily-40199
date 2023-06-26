@@ -1,0 +1,54 @@
+.add-new-ingredient-modal {
+    .modal-dialog {
+        width: 360px;
+        height: 418px;
+        padding: 20px;
+    }
+    .modal-content {
+        padding: 25px !important;
+    }
+    .text-label {
+        font-family: 'Open Sans';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 22px;
+        display: flex;
+        align-items: center;
+        color: #202020;
+    }
+    .heading {
+        font-family: 'Open Sans';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 20px;
+        line-height: 20px;
+        color: #202020;
+    }
+    .btn-wrapper {
+        display: flex;
+        gap: 16px;
+        justify-content: flex-end;
+
+        .save-btn {
+            background: #67C3BD;
+            border-color: #67C3BD;
+            font-family: 'Montserrat';
+            font-style: normal;
+            font-weight: 600;
+            font-size: 16px;
+            line-height: 24px;
+            color: #FFFFFF;
+        }
+        .cancel-btn {
+            border-color: #EEF8F7;
+            background: #EEF8F7;
+            font-family: 'Montserrat';
+            font-style: normal;
+            font-weight: 600;
+            font-size: 16px;
+            line-height: 24px;
+            color: #F2786C;
+        }
+    }
+}

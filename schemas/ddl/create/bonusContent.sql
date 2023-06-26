@@ -1,4 +1,4 @@
-Use `thedinne_backend`;
+Use `heroku_52b3caaac7494c9`;
 
 CREATE TABLE `bonusContent` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

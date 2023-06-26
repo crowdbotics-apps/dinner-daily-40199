@@ -1,0 +1,23 @@
+@import './textType.scss';
+@import './margin-padding.scss';
+
+.min-h-100vh {
+  min-height: 100vh !important;
+}
+
+.max-h-95vh {
+  max-height: 95vh !important;
+}
+
+.h-100vh {
+  height: 100vh !important;
+}
+
+body {
+  font-family: 'Montserrat' !important;
+}
+
+.eye-icon {
+  width: 24px;
+  height: 16px;
+}

@@ -82,7 +82,7 @@ const getSubscriptionPlanList = async (req, res, cb) => {
     try {
         const productPriceData = await stripe.prices.list({
             expand: ['data.product'],
-            limit: 5,
+            limit: 8,
           });
           let respObj = [];
           productPriceData['data'].forEach(productPrice => {

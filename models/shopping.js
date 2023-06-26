@@ -59,9 +59,10 @@ const shoppingCategories = (req, res, cb) => {
 
 // Function to get shopping list ingredients
 const getIngredients = (req, res, cb) => {
-	utils.writeInsideFunctionLog('shopping', 'getIngredients');
+	utils.writeInsideFunctionLog('shopping', 'getIngredients', req.query);
     let resObj = Object.assign({}, utils.getErrorResObj());
-    const queryParam = dbQuery.selectQuery(constant['DB_VIEW']['SHOPPING_LIST_ITEMS_VIEW'], [], {user_id: req.userData.id});
+    let week = req.query.week === 'previous' ? 'YEARWEEK(CURDATE() - INTERVAL 1 WEEK)' : 'YEARWEEK(CURDATE())';
+    const queryParam = dbQuery.selectQuery(constant['DB_VIEW']['SHOPPING_LIST_ITEMS_VIEW'], [], {user_id: req.userData.id, 'YEARWEEK(start_date)': `${week}`});
 	pool.query(queryParam)
     .then(resp => {
         const resultArray = resp[0].reduce((outKey, inputKey) => {

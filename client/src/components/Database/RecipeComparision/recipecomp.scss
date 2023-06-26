@@ -1,0 +1,74 @@
+.recipe-comparision-container {
+    .selected-item {
+        display: inline-block;
+        padding: 2px 8px;
+        margin-right: 5px;
+        margin-bottom: 5px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #fff;
+        background-color: #007bff;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .selected-item:hover {
+        background-color: #0069d9;
+    }
+
+    .selected-item:active {
+        background-color: #0062cc;
+    }
+
+    .choose-recipe-select {
+        width: 485px;
+        height: 44px;
+        /* background: rgba(255, 255, 255, 0.5); */
+        border: 1px solid #C8D3D3;
+        box-shadow: inset 0px 4px 8px rgba(86, 186, 180, 0.15);
+        backdrop-filter: blur(2px);
+        border-radius: 10px;
+    }
+
+    .text-label {
+        text-align: left;
+        font-family: 'Open Sans';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 22px;
+        display: flex;
+        align-items: center;
+        color: #202020;
+    }
+
+    .exclude-ing-select {
+        z-index: 1;
+        box-shadow: 0px 4px 4px rgba(86, 186, 180, 0.2);
+        backdrop-filter: blur(2px);
+        border-radius: 10px;
+
+        .css-1p3m7a8-multiValue {
+            background: #56BAB4;
+            box-shadow: inset 0px 4px 8px rgba(86, 186, 180, 0.15);
+            backdrop-filter: blur(2px);
+            border-radius: 10px;
+            color: #FFFFFF;
+        }
+
+        .css-1p3m7a8-multiValue {
+            font-family: 'Open Sans';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 24px;
+            display: flex;
+            align-items: center;
+            color: #FFFFFF !important;
+
+            div{
+                color: #FFFFFF !important;
+            }
+        }
+    }
+}

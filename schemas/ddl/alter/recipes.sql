@@ -1,1 +1,1 @@
-Alter table thedinne_backend.recipes add notes varchar(255) default '';
+Alter table heroku_52b3caaac7494c9.recipes add notes varchar(255) default '';

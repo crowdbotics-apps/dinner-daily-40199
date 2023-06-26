@@ -1,0 +1,14 @@
+.add-bonus-modal {
+    .modal-dialog {
+        padding: 20px;
+        max-width: 400px !important;
+        .modal-content {
+            padding: 18px;
+        }
+    }
+}
+
+.btn-wrapper {
+    display: flex;
+    justify-content: flex-end;
+}

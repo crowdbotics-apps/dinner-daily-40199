@@ -1,0 +1,322 @@
+@import 'variable';
+
+/********** Mixins **********/
+@mixin clearfix {
+  &:after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+}
+
+/**** show max lines with ellipse at end ***/
+@mixin ellipsed_lines($max-lines, $max-height: '') {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: $max-lines;
+  /* number of lines to show */
+  line-clamp: $max-lines;
+  -webkit-box-orient: vertical;
+
+  @if $max-height != '' {
+    max-height: $max-height;
+  }
+}
+
+/********** Vendor prefixing eg: -webkit-, -moz-, -ms-, -o- **********/
+@mixin prefix($property, $value, $vendors: webkit moz ms o, $default: true) {
+  @if $vendors {
+    @each $vendor in $vendors {
+      #{"-" + $vendor + "-" + $property}: #{$value};
+    }
+  }
+
+  @if $default {
+    #{$property}: #{$value};
+  }
+}
+
+@mixin container-position {
+  max-width: $max-width;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+@mixin radius($radius) {
+  @include prefix('border-radius', $radius);
+}
+
+@mixin transition($transition) {
+  @include prefix('transition', $transition);
+}
+
+@mixin shadow($shadow) {
+  @include prefix('box-shadow', $shadow);
+}
+
+@mixin opacity($opacity) {
+  opacity: $opacity;
+  $opacity-ie: $opacity * 100;
+  filter: alpha(opacity=$opacity-ie); //IE8
+}
+
+/*Pseudo eg: &::before, &::after*/
+
+@mixin pseudo($display: block, $pos: absolute, $content: '') {
+  content: $content;
+  display: $display;
+  position: $pos;
+}
+
+@mixin transform($property) {
+  @include prefix('transform', $property);
+}
+
+/*horizontally & vertically centering*/
+
+@mixin center-vertically {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  @include prefix(transform, translate(-50%, -50%), 'webkit' 'ms');
+}
+
+/********** Keyframes **********/
+
+@mixin keyframes($name) {
+  @-webkit-keyframes #{$name} {
+    @content;
+  }
+
+  @-moz-keyframes #{$name} {
+    @content;
+  }
+
+  @-ms-keyframes #{$name} {
+    @content;
+  }
+
+  @-o-keyframes #{$name} {
+    @content;
+  }
+
+  @keyframes #{$name} {
+    @content;
+  }
+}
+
+/********** Media queries **********/
+
+$breakpoints: (
+  'phone': 320px,
+  'phone-wide': 558px,
+  'tablet': 991px,
+  'tablet-wide': 1024px,
+);
+
+@mixin mq($width, $type: max) {
+  @media only screen and (#{$type}-width: $width) {
+    @content;
+  }
+
+  @if map_has_key($breakpoints, $width) {
+    $width: map_get($breakpoints, $width);
+
+    @if $type==max {
+      $width: $width - 1px;
+    }
+
+    @media only screen and (#{$type}-width: $width) {
+      @content;
+    }
+  }
+}
+
+@mixin respond-between($lower, $upper) {
+  // If both the lower and upper breakpoints exist in the map.
+  @if map-has-key($breakpoints, $lower) and map-has-key($breakpoints, $upper) {
+    // Get the lower and upper breakpoints.
+    $lower-breakpoint: map-get($breakpoints, $lower);
+    $upper-breakpoint: map-get($breakpoints, $upper);
+
+    // Write the media query.
+    @media (min-width: $lower-breakpoint) and (max-width: ($upper-breakpoint)) {
+      @content;
+    }
+
+    // If one or both of the breakpoints don't exist.
+  } @else {
+    // If lower breakpoint is invalid.
+    @if (map-has-key($breakpoints, $lower) ==false) {
+      // Log a warning.
+      @warn 'Your lower breakpoint was invalid: #{$lower}.';
+    }
+
+    // If upper breakpoint is invalid.
+    @if (map-has-key($breakpoints, $upper) ==false) {
+      // Log a warning.
+      @warn 'Your upper breakpoint was invalid: #{$upper}.';
+    }
+  }
+}
+
+/********** Mixin for Flex **********/
+@mixin display-flex($is-important: null) {
+  display: -ms-flexbox $is-important;
+  display: -webkit-flex $is-important;
+  display: flex $is-important;
+}
+
+@mixin flex-justify-content($justify-content) {
+  justify-content: $justify-content;
+  -webkit-justify-content: $justify-content;
+
+  @if ($justify-content==space-around) {
+    -ms-flex-pack: distribute;
+  } @else if($justify-content==space-between) {
+    -ms-flex-pack: justify;
+  } @else if($justify-content==flex-end) {
+    -ms-flex-pack: end;
+  } @else if($justify-content==flex-start) {
+    -ms-flex-pack: start;
+  } @else {
+    -ms-flex-pack: $justify-content;
+  }
+}
+
+@mixin flex-align-items($align-items) {
+  align-items: $align-items;
+  -webkit-align-items: $align-items;
+
+  @if ($align-items==flex-end) {
+    -ms-flex-align: end;
+  } @else if($align-items==flex-start) {
+    -ms-flex-align: start;
+  } @else {
+    -ms-flex-align: $align-items;
+  }
+}
+
+@mixin flex-align-self($align-self) {
+  align-self: $align-self;
+  -webkit-align-self: $align-self;
+
+  @if ($align-self==flex-start) {
+    -ms-flex-item-align: start;
+  } @else if($align-self==flex-end) {
+    -ms-flex-item-align: end;
+  } @else {
+    -ms-flex-item-align: $align-self;
+  }
+}
+
+@mixin flex-direction($direction) {
+  flex-direction: $direction;
+  -webkit-flex-direction: $direction;
+}
+
+@mixin flex-position($align-items, $justify-content, $is-important: null) {
+  @include display-flex($is-important);
+  @include flex-justify-content($justify-content);
+  @include flex-align-items($align-items);
+}
+
+@mixin flex-wrap($wrap-val) {
+  flex-wrap: $wrap-val;
+  -webkit-flex-wrap: $wrap-val;
+
+  @if ($wrap-val==nowrap) {
+    -ms-flex-wrap: none;
+  } @else {
+    -ms-flex-wrap: $wrap-val;
+  }
+}
+
+@mixin flex($value) {
+  -webkit-flex: $value;
+  -ms-flex: $value;
+  flex: $value;
+}
+
+.flex-align-center {
+  @include display-flex;
+  align-items: center;
+}
+
+@mixin ellipsis($value) {
+  display: -webkit-box;
+  -webkit-line-clamp: $value;
+  /*No of lines after which the ellipsis needs to be added*/
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@mixin ellipsis_charLimit($charlimit) {
+  overflow: hidden;
+  max-width: $charlimit + ch;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin font-lineheight($value1: 12px, $value2: 12px, $value3: 0.05em) {
+  font-size: $value1;
+  line-height: $value2;
+  letter-spacing: $value3;
+}
+
+@mixin margin-sections($value: 20px) {
+  margin: $value -15px;
+}
+
+@mixin margin-btw-sections($value: 20px) {
+  margin-bottom: 30px;
+}
+
+@mixin margin-mobile {
+  margin-left: 20px;
+}
+
+@mixin padding-card($value: 12px) {
+  padding: 12px;
+}
+
+@mixin section-header-font($value1: 24px, $value2: 32px) {
+  font-size: $value1;
+  line-height: $value2;
+}
+
+@mixin margin-btw-item($value: 16px) {
+  margin-bottom: $value;
+}
+
+@mixin card-title-style($value1: 16px, $value2: 24px) {
+  font-weight: 600;
+  font-size: $value1;
+  line-height: $value2;
+  cursor: pointer;
+  color: $black900;
+
+  &:hover {
+    color: $ciplaHover;
+  }
+}
+
+@mixin remove-col-margin($value: -15px) {
+  margin-left: $value;
+  margin-right: $value;
+}
+
+@mixin section-inner-mobile($value: -15px) {
+  padding: 0px 0px;
+  margin-left: $value !important;
+  margin-right: $value !important;
+}
+
+@mixin section-inner-desktop($value: auto) {
+  padding: 0px 48px;
+  max-width: 1366px;
+  margin-left: $value !important;
+  margin-right: $value !important;
+}

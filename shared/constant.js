@@ -1,5 +1,6 @@
 module.exports = {
 	'DB_NAME': "heroku_52b3caaac7494c9",
+	// 'DB_NAME': "dinnerdaily",
 	'NO_RESOURCE_FOUND' : "No resource found",
 	'AUTH_FAIL': "Authentication failed",
 	'OOPS_ERROR': "Oops!!! Something went wrong",
@@ -113,6 +114,7 @@ module.exports = {
 		'INGREDIENTS_MEASUREMENTS': 'ingredientmeasurements',
 		'USER_WEEK_MENUS': 'userweekmenus',
 		'USER_WEEK_DAY_MENUS': 'userweekdaymenus',
+		'USER_WEEK_DAY_MENU_ALTERNATIVES': 'userweekdaymenualternatives',
 		'NUTRITIONAL_PROFILE': 'nutritionalprofiles',
 		'SHOPPING_CATEGORIES': 'shoppingcategories',
 		'SHOPPING_LISTS': 'shoppinglists',
