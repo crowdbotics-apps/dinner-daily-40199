@@ -48,12 +48,16 @@ const _fetchStoreSpecialData = async (storeData) => {
 
 
 //Common function to fetch stores their state from database
-const _fetchStore = async (queryParam) => {
+const _fetchStore = async (queryParam, isNotification) => {
     utils.writeInsideFunctionLog("store", "_fetchStore");
-    return await pool.query(queryParam).then(async (results) =>{
-        const storeData = results[0];
-        await _fetchStateData(storeData);
-        return await _fetchStoreSpecialData(storeData);
+    return await pool.query(queryParam).then(async ([results]) =>{
+        if (!isNotification) {
+            return results;
+        } else {
+            const storeData = results;
+            await _fetchStateData(storeData);
+            return await _fetchStoreSpecialData(storeData);
+        }
     }).catch((error) => {
         utils.writeErrorLog('store', '_fetchStore', 'Error while fetching stores  and their state', error, queryParam);
         throw  error;
@@ -90,14 +94,15 @@ const _insertStoreSaleDetail = async (reqData) => {
 const getStores = async (req, res, cb) => {
 	utils.writeInsideFunctionLog('store', 'getStores');
 	let resObj = Object.assign({}, utils.getErrorResObj());
+    let isNotification = req.query.notification;
     const paginationObj = helper.getPagination(req.query?.page, req.query?.pageSize,req.query?.sortField,req.query?.sortValue);
     let queryParam = dbQuery.selectQuery(constant['DB_TABLE']['STORES'], [], {}, paginationObj);
     try {
-        const storeData = await _fetchStore(queryParam);
-        const selectQuery = dbQuery.selectQuery(constant['DB_TABLE']['STORES'],["count(*) as total_items"],{},{});
-        const resultData = await pool.query(selectQuery);
-        const total_item = resultData[0];
-        resObj = Object.assign({data: storeData,...total_item[0]}, utils.getSuccessResObj());
+        const storeData = await _fetchStore(queryParam, isNotification);
+        // const selectQuery = dbQuery.selectQuery(constant['DB_TABLE']['STORES'],["count(*) as total_items"],{},{});
+        // const resultData = await pool.query(selectQuery);
+        // const total_item = resultData[0];
+        resObj = Object.assign({data: storeData,total_items: storeData.length}, utils.getSuccessResObj());
         cb(resObj);
     } catch (err) {
         resObj['message'] = constant['OOPS_ERROR'];
