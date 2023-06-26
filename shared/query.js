@@ -200,7 +200,7 @@ const updateWeekMenuQuery = (userId, recipeType, weekDayMenuId, newRecipeId) =>
     join ${constant['DB_NAME']}.${constant['DB_TABLE']['USER_WEEK_MENUS']} uwm on uwdm.week_menu_id = uwm.id
     set ${recipeType} = ${newRecipeId} where uwm.user_id = ${userId} and uwdm.id = ${weekDayMenuId}`;
 
-const fetchUserWeekMenuQuery = (userId) => `select uwdm.*, uwdm.id as week_day_menu_id, r.*, r.id as recipe_id, np.*,
+const fetchUserWeekMenuQuery = (userId, week) => `select uwdm.*, uwdm.id as week_day_menu_id, r.*, r.id as recipe_id, np.*,
 CASE
 WHEN f.id is not null
 THEN true
@@ -211,7 +211,7 @@ join ${constant['DB_NAME']}.${constant['DB_TABLE']['USER_WEEK_MENUS']} uwm on uw
 join ${constant['DB_NAME']}.${constant['DB_TABLE']['RECIPES']} r on r.id = uwdm.main_recipe_id
 left join ${constant['DB_NAME']}.${constant['DB_TABLE']['NUTRITIONAL_PROFILE']} np on np.id = r.nutritional_profile_id
 left join ${constant['DB_NAME']}.${constant['DB_TABLE']['FAVORITES']} f on f.user_id = uwm.user_id and r.id = f.recipe_id
-where uwm.user_id = ${userId}`;
+where uwm.user_id = ${userId} and YEARWEEK(uwm.created) = ${week === 'previous' ? 'YEARWEEK(CURDATE() - INTERVAL 1 WEEK)' : 'YEARWEEK(CURDATE())'}`;
 
  const fetchSideRecipeQuery = (weekDayMenuId, userId) => `select r.*, r.id as recipe_id, np.*,
  CASE
@@ -343,7 +343,7 @@ const fetchUserDietPlanOptions = (userId) => `select name, dp.type,
 
 const fetchRecipesExceptNonSeasonal = (season, dishType) => {
     let query = `SELECT id FROM ${constant['DB_NAME']}.${constant['DB_TABLE']['RECIPES']}
-    where dish_type = ${dishType} and user_id is null and (tag_names not like '%dinner party%' or tag_names not like '%dessert%')
+    where dish_type = ${dishType} and user_id is null and (tag_names not like '%dinner party%' and tag_names not like '%dessert%')
     and id not in
         (SELECT id FROM ${constant['DB_NAME']}.${constant['DB_TABLE']['RECIPES']} where `
         for (let i = 0; i < season.length; i++) {
@@ -409,8 +409,16 @@ const randomSideDishQuery = (recipePool) => `SELECT id FROM ${constant['DB_NAME'
 
 const getUserCurrentWeekMenuQuery = (userId) => `SELECT * FROM ${constant['DB_NAME']}.${constant['DB_TABLE']['USER_WEEK_MENUS']}
     WHERE user_id = ${userId} and
-    start_date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
-    AND start_date <= CURDATE() + INTERVAL 1 DAY;`
+    YEARWEEK(start_date) = YEARWEEK(CURDATE());`;
+
+const selectWeekMenuAlternativesQuery = (userId) => `select uwma.recipe_id as id, r.name, r.protein_category, uwma.is_on_sale
+    from ${constant['DB_NAME']}.${constant['DB_TABLE']['USER_WEEK_DAY_MENU_ALTERNATIVES']} uwma
+    join ${constant['DB_NAME']}.${constant['DB_TABLE']['USER_WEEK_MENUS']} uwm on uwm.id = uwma.user_week_menu_id
+    join ${constant['DB_NAME']}.${constant['DB_TABLE']['RECIPES']} r on r.id = uwma.recipe_id
+    where uwm.user_id = ${userId};`;
+
+const userMenuCronQuery = `SELECT u.* FROM ${constant['DB_NAME']}.${constant['DB_TABLE']['USERS']} u join ${constant['DB_NAME']}.${constant['DB_TABLE']['USER_WEEK_MENUS']} uwm on uwm.user_id = u.id
+    WHERE DATE(uwm.created) = DATE_SUB(CURDATE(), INTERVAL 7 DAY);`;
 
 module.exports = {
     selectQuery,
@@ -452,5 +460,7 @@ module.exports = {
     ingredientBalanceQuery,
     recipeSideItemsQuery,
     randomSideDishQuery,
-    getUserCurrentWeekMenuQuery
+    getUserCurrentWeekMenuQuery,
+    selectWeekMenuAlternativesQuery,
+    userMenuCronQuery
 }

@@ -8,13 +8,14 @@ const staticContent = rfr('/shared/staticContent');
 
 // Function to give weekly content on home page
 const homeContent = async (req, res, cb) => {
-	utils.writeInsideFunctionLog('home', 'homeContent');
+	utils.writeInsideFunctionLog('home', 'homeContent', req.query);
     let resObj = Object.assign({}, utils.getErrorResObj());
+    let week = req.query.week === 'previous' ? 'YEARWEEK(CURDATE() - INTERVAL 1 WEEK)' : 'YEARWEEK(CURDATE())';
     let promiseArr = [];
     let queryParam = dbQuery.selectQuery(constant['DB_VIEW']['SHOPPING_LIST_ITEMS_VIEW'], ['count(*) as count'], {user_id: req.userData.id, is_on_sale: 1});
     promiseArr.push(pool.query(queryParam));
     // shopping category - 5 for Produce (fruits and vegetables)
-    queryParam = dbQuery.selectQuery(constant['DB_VIEW']['SHOPPING_LIST_ITEMS_VIEW'], ['count(*) as count'], {user_id: req.userData.id, shopping_category: 5});
+    queryParam = dbQuery.selectQuery(constant['DB_VIEW']['SHOPPING_LIST_ITEMS_VIEW'], ['count(*) as count'], {user_id: req.userData.id, shopping_category: 5, 'YEARWEEK(start_date)': `${week}`});
     promiseArr.push(pool.query(queryParam));
 
     return await Promise.all(promiseArr).then((res) => {

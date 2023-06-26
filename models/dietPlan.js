@@ -122,14 +122,18 @@ const dietPlanOptions = async (req, res, cb) => {
     conn.query(insertQueryParam, [valuesArr])
       .then(async res => {
         await conn.query('COMMIT');
-        const userMenu = await algorithmModel.createMenu(req.userData);
+        const userMenu = await algorithmModel.createMenu(req.userData, 'create');
         await userMenuModel.insertDataInUserWeekMenu(userId, userMenu, req.body.store, req.body.familySize);
+        await conn.query('COMMIT');
         await conn.release();
         resObj = Object.assign({}, utils.getSuccessResObj());
         resObj['message'] = constant['SUCCESS_MSG'];
         cb(resObj);
       })
       .catch(async err => {
+        const deleteQueryParam = dbQuery.deleteQuery(constant.DB_TABLE.USER_DIET_PLAN_OPTIONS, { user_id: userId })
+        await conn.query(deleteQueryParam);
+        await conn.query('COMMIT');
         await conn.query('ROLLBACK');
         await conn.release();
         resObj['message'] = err.message || err;

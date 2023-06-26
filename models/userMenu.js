@@ -1,10 +1,12 @@
 const rfr = require('rfr');
+const cron = require('node-cron');
 
 const pool = rfr('/db/index');
 const constant = rfr('/shared/constant');
 const utils = rfr('/shared/utils');
 const helper = rfr('/shared/helper');
 const dbQuery = rfr('/shared/query');
+const algorithmModel = rfr('/models/algorithm/menuGenerator');
 
 const _formatDataForShoppingList = (weekMenuId, familySize) => {
   let obj = {
@@ -19,16 +21,36 @@ const _formatDataForShoppingList = (weekMenuId, familySize) => {
   return { shoppingListQueryParam: queryParam, shoppingListValuesArr: valuesArr };
 }
 
+const _formatDataForUserWeekDayMenuAlternatives = (weekMenuId, userMenu, dateTime) => {
+  let weekDayMenuAlternatives = [];
+  for (let i = 0; i < 5; i++) {
+    let menu = userMenu[i+5];
+    let obj = {
+      'user_week_menu_id': weekMenuId,
+      'recipe_id': menu.id,
+      'type': 1,
+      'week_day_number': 1,
+      'is_on_sale': 0,
+      'created': dateTime || helper.getDateAndTime(),
+      'updated': dateTime || null
+    }
+    weekDayMenuAlternatives.push(obj);
+  }
+  const { columns, valuesArr } = utils.formatRequestDataForInsert(weekDayMenuAlternatives);
+  const queryParam = dbQuery.insertQuery(constant['DB_TABLE']['USER_WEEK_DAY_MENU_ALTERNATIVES'], columns);
+  return { alternativesQueryParam: queryParam, alternativesValuesArr: valuesArr };
+}
+
 const _fetchAndFormatRecIngredients = async (userId, storeId, userMenu, shoppingListId) => {
   //fetch data for shopping list item
   let selectQueryParam = dbQuery.fetchShoppingIngredient(userId, storeId);
   if (shoppingListId) {
       let recipeIds = [];
-      userMenu.forEach(menu => {
-        recipeIds.push(menu.id);
-        if (menu.firstSideId) recipeIds.push(menu.firstSideId);
-        if (menu.secSideId) recipeIds.push(menu.secSideId);
-      })
+      for (let i = 0; i < 5; i++) {
+        recipeIds.push(userMenu[i].id);
+        if (userMenu[i].firstSideId) recipeIds.push(userMenu[i].firstSideId);
+        if (userMenu[i].secSideId) recipeIds.push(userMenu[i].secSideId);
+      }
       selectQueryParam = dbQuery.fetchShoppingIngredientForNewUser(recipeIds, storeId);
   }
   const [rows] = await pool.query(selectQueryParam);
@@ -85,11 +107,15 @@ const insertDataInUserWeekMenu = async (userId, userMenu, storeId, familySize = 
       await conn.query('START TRANSACTION');
       return conn.query(insertQueryParam, [valuesArr])
           .then(async res => {
+            let weekMenuId = res[0]['insertId'];
             //insert data in user week day menu table
-            const { queryParam, valuesArr } = _formatDataForUserWeekDayMenu(res[0]['insertId'], userMenu);
+            const { queryParam, valuesArr } = _formatDataForUserWeekDayMenu(weekMenuId, userMenu);
             await conn.query(queryParam, [valuesArr]);
+            //insert data in user week day menu alternative table
+            const { alternativesQueryParam, alternativesValuesArr } = _formatDataForUserWeekDayMenuAlternatives(weekMenuId, userMenu);
+            await conn.query(alternativesQueryParam, [alternativesValuesArr]);
             //insert data in shopping list table
-            const { shoppingListQueryParam, shoppingListValuesArr } = _formatDataForShoppingList(res[0]['insertId'], familySize);
+            const { shoppingListQueryParam, shoppingListValuesArr } = _formatDataForShoppingList(weekMenuId, familySize);
             return await conn.query(shoppingListQueryParam, [shoppingListValuesArr]);
           }).then(async sRes => {
             if (Array.isArray(sRes)) {
@@ -132,6 +158,12 @@ const updateUserWeekDayMenu = async (userId, userMenu, storeId, familySize = 1) 
               // Add new week menu for user
               const { queryParam, valuesArr } = _formatDataForUserWeekDayMenu(weekMenuId, userMenu, res[0]['created']);
               await conn.query(queryParam, [valuesArr]);
+              // Deleted existing week menu alternatives
+              const alternativesDeleteQueryParam = dbQuery.deleteQuery(constant['DB_TABLE']['USER_WEEK_DAY_MENU_ALTERNATIVES'], {user_week_menu_id: weekMenuId});
+              await conn.query(alternativesDeleteQueryParam);
+              //insert data in user week day menu alternative table
+              const { alternativesQueryParam, alternativesValuesArr } = _formatDataForUserWeekDayMenuAlternatives(weekMenuId, userMenu, res[0]['created']);
+              await conn.query(alternativesQueryParam, [alternativesValuesArr]);
               //Update data in shopping list table
               const updateQueryParam = dbQuery.updateQuery(constant['DB_TABLE']['SHOPPING_LISTS'], {family_size: familySize}, {user_week_menu_id: weekMenuId});
               return await conn.query(updateQueryParam);
@@ -145,6 +177,7 @@ const updateUserWeekDayMenu = async (userId, userMenu, storeId, familySize = 1) 
             // Add new shopping list items
             let { shoppingListItemsQueryParam, shoppingListItemsValuesArr } = await _fetchAndFormatRecIngredients(userId, storeId, userMenu);
             await conn.query(shoppingListItemsQueryParam, [shoppingListItemsValuesArr]);
+            await conn.query('COMMIT');
             return await conn.release();
           })
           .catch(async err => {
@@ -161,6 +194,36 @@ const updateUserWeekDayMenu = async (userId, userMenu, storeId, familySize = 1) 
   }
 }
 
+// cron job to run every day at midnight to create user week menu
+cron.schedule('0 10 * * *', async () => {
+  try {
+    const queryParam = dbQuery.userMenuCronQuery;;
+    return await pool.query(queryParam)
+    .then(async ([resp]) => {
+      for (let i = 0; i < resp.length; i++) {
+        try {
+          utils.writeInsideFunctionLog('userMenu', 'cronJob started for - ', resp[i].id);
+          utils.log('Cron job started for ->', resp[i].id);
+          const userMenu = await algorithmModel.createMenu(resp[i], 'update');
+          await insertDataInUserWeekMenu(resp[i].id, userMenu, resp[i]['preferred_store_id'], resp[i]['family_size']);
+          utils.writeInsideFunctionLog('userMenu', 'cronJob', 'data end for user');
+          utils.log('data end for user');
+        } catch (error) {
+          utils.writeErrorLog('menuGenerator', 'cronJob', 'Error while creating user menu for every week through node cron for user: ', resp[i].id, error);
+          continue;
+        }
+      }
+      utils.log('Menu generation cron job task has been done');
+      return true;
+    }).catch(err => {
+        utils.writeErrorLog('menuGenerator', 'cronJob', 'Error while fetching user whose menu need to generate', err);
+        utils.log('Error while fetching user whose menu need to generate: ', err);
+    })
+  } catch (err) {
+    utils.writeErrorLog('menuGenerator', 'cronJob', 'Error while creating user menu for every week through node cron', err);
+    utils.log('Error while creating user menu for every week through node cron: ', err);
+  }
+});
 
 module.exports = {
 	insertDataInUserWeekMenu,

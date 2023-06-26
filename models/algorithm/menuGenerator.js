@@ -4,6 +4,7 @@ const pool = rfr('/db/index');
 const dbQuery = rfr('/shared/query');
 const constant = rfr('/shared/constant');
 const utils = rfr('/shared/utils');
+const helper = rfr('/shared/helper');
 const seasonalRule = rfr('/models/algorithm/seasonalRule');
 const ruleConditions = rfr('/models/algorithm/ruleConditions');
 const balanceRules = rfr('/models/algorithm/balanceRules');
@@ -57,10 +58,21 @@ const _fetchRecipePoolAfterUsedSideRecipe = async (userId, sideRecipePool) => {
 	})
 }
 
-
-const _createRecipePoolArr = (recipesPool) => {
+// Function to create id array from id object array
+const _createRecipePoolArr = async (recipesPool) => {
 	return recipesPool.map(recipe => recipe.id);
 }
+
+// Function to insert / update recipe score in recipe not used scorer table.
+// const _insertInRecipeNotUsedScore = (requestFor, recipePoolArray) => {
+// 	let queryParam = '';
+// 	if (requestFor === 'create') {
+// 		queryParam
+// 	} else if (requestFor === 'update') {
+
+// 	}
+// 	return ;
+// }
 
 // Comon function to apply rules and return recipe pool after applying rules
 const _applyRules = async (selectedRecipeArr, recipePoolArray, userRestrictionRuleSets, ruleKey) => {
@@ -77,10 +89,12 @@ const _applyRules = async (selectedRecipeArr, recipePoolArray, userRestrictionRu
 }
 
 // Function to fetch main menu recipes
-const _getMainMenuRecipes = async (userData, seasonArray, userRestrictionRuleSets) => {
+const _getMainMenuRecipes = async (userData, seasonArray, userRestrictionRuleSets, requestFor = '') => {
 	let recipesPoolAfterRemovalOfNonSeasonalRecipes = await _fetchRecipesExceptNonSeasonal(seasonArray, constant['DISH_TYPE']);
 	let recipesPoolAfterRemovalOfUsedRecipe = await _fetchRecipePoolAfterUsedRecipe(userData.id, recipesPoolAfterRemovalOfNonSeasonalRecipes);
 	let recipePoolArray = _createRecipePoolArr(recipesPoolAfterRemovalOfUsedRecipe);
+	// insert/update score in recipeNotUsedScoreTable
+	// await _insertInRecipeNotUsedScore(recipePoolArray, requestFor);
 	let selectedRecipeArr = [];
 	for (let index = 0; index < 10; index++) {
 		//Apply main dish rules
@@ -89,6 +103,11 @@ const _getMainMenuRecipes = async (userData, seasonArray, userRestrictionRuleSet
 		const recipePoolWithScorer = await scorer.get(finalRecipePool, userData, selectedRecipeArr);
 		selectedRecipeArr.push({id: recipePoolWithScorer[0].id});
 		recipePoolArray = finalRecipePool.filter((recipeId) => recipeId !== recipePoolWithScorer[0].id);
+		if (!recipePoolArray.length) {
+			let recipesPoolAfterRemovalOfUsedRecipeArr = _createRecipePoolArr(recipesPoolAfterRemovalOfUsedRecipe);
+			let selectedRecipeArray = _createRecipePoolArr(selectedRecipeArr);
+			recipePoolArray = recipesPoolAfterRemovalOfUsedRecipeArr.filter(recipeId => !selectedRecipeArray.includes(recipeId));
+		}
 	}
 	return selectedRecipeArr;
 }
@@ -123,7 +142,7 @@ const _filterSideRecipePoolForCategories = async (sideCategories, sideRecipePool
 // Common function to select side dish after apply meal rule and main and side dish rules
 const _selectSideRecipeForMenu = async (sideRecipePoolWithScorer, menuId, selectedFirstRecipeId, userRestrictionRuleSets, selectedRecipes, selectedSideRecipeArr, isSecSideRecipe) => {
 	let selectedSideRecipe = '';
-	for (let i = 0; i < sideRecipePoolWithScorer.length; i++) {
+	for (let i = 0; i < 5; i++) {
 		selectedSideRecipe = sideRecipePoolWithScorer[i];
 		let selectedRecipeIdsForMealRule = [menuId, {id: selectedSideRecipe.id}];
 		if (!!isSecSideRecipe) {
@@ -239,17 +258,17 @@ const _getMenuWithSideRecipes = async (selectedRecipes, userData, seasonArray, u
 	return selectedRecipes;
 }
 
-const createMenu = async (userData) => {
+const createMenu = async (userData, requestFor) => {
 	try {
 		utils.writeInsideFunctionLog('menuGenerator', 'createMenu', userData);
 		const seasonArray = await seasonalRule.get();
 		userRestrictionRuleSets = await restrictionRules.getAllRules(userData.id);
-		let selectedRecipes = await _getMainMenuRecipes(userData, seasonArray, userRestrictionRuleSets);
+		let selectedRecipes = await _getMainMenuRecipes(userData, seasonArray, userRestrictionRuleSets, requestFor);
 		let menuWithSideRecipes = await _getMenuWithSideRecipes(selectedRecipes, userData, seasonArray, userRestrictionRuleSets);
 		return menuWithSideRecipes;
 	} catch (err) {
 		utils.writeErrorLog('menuGenerator', 'createMenu', 'Error in create menu function', err);
-		throw err.message || err;
+		return helper.defaultMenuWithSideRecipes;
 	}
 }
 

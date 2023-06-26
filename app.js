@@ -48,11 +48,6 @@ app.use(bodyParser.urlencoded({
     next();
   });
 
- 
-app.get("/hello",(req, res)=>{
-res.send("Hello")
-})
-
   const server = http.createServer(app);
   server.listen(app.get('port'), function () {
     console.log('App is listening on port ' + config.port + '! Visit localhost:' + config.port + ' in your browser.');
