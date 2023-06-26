@@ -41,7 +41,7 @@ const EnterEmail = () => {
             .then((res) => {
                 setLoading(false);
                 setSuccess(
-                    "Reset Password Link has been sent to your email ID"
+                    "Forgot password link has been sent to your email ID"
                 );
             })
             .catch((err) => {
@@ -67,7 +67,7 @@ const EnterEmail = () => {
                     src="https://app.thedinnerdaily.com/images/manifest/icon-144x144.png"
                 />
 
-                <Card.Title>Reset Password</Card.Title>
+                <Card.Title>Forgot Password</Card.Title>
                 <Card.Subtitle>
                     Type in your email address with what you are signed up for
                     our services. We will send you a reset link to your email.
@@ -95,7 +95,7 @@ const EnterEmail = () => {
                             }}
                             variant="primary"
                         >
-                            Send Reset Password Link
+                            Send Forgot Password Link
                         </Button>
                         {error && <ErrorMsg errormsg={error} />}
                         {success && <SuccessMsg successmsg={success} />}
