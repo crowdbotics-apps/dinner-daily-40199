@@ -24,6 +24,7 @@ const EndPoints = {
     uploadSpecial: "api/v1/admin/uploadSpecial/",
     getSpecial: "api/v1/admin/store/{id}/special/",
     resetPassword: "api/v1/resetPassword/",
+    forgotPassword: "api/v1/forgotPassword/",
 };
 
 export default EndPoints;
