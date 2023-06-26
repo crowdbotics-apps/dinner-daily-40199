@@ -99,10 +99,10 @@ const fetchAdminIngredientsQuery = (paginationObj={},whereCondition={})=>{
 }
 
 const fetchSidesQuery = (recipeId) =>`SELECT crst.recipe_side_item_id, ht.name, crst.hash_tag_id, rst.side, rst.recipe_side_combination_id, rst.id, rsc.recipe_id
-FROM ${constant['DB_TABLE']['CROSS_RECIPE_SIDE_ITEM_TAGS']} crst
-join ${constant['DB_TABLE']['RECIPE_SIDE_ITEMS']} rst on rst.id = crst.recipe_side_item_id
-join ${constant['DB_TABLE']['RECIPE_SIDE_COMBINATIONS']} rsc on rsc.id = rst.recipe_side_combination_id
-join ${constant['DB_TABLE']['HASH_TAGS']} ht on ht.id = crst.hash_tag_id
+FROM ${constant['DB_NAME']}.${constant['DB_TABLE']['CROSS_RECIPE_SIDE_ITEM_TAGS']} crst
+join ${constant['DB_NAME']}.${constant['DB_TABLE']['RECIPE_SIDE_ITEMS']} rst on rst.id = crst.recipe_side_item_id
+join ${constant['DB_NAME']}.${constant['DB_TABLE']['RECIPE_SIDE_COMBINATIONS']} rsc on rsc.id = rst.recipe_side_combination_id
+join ${constant['DB_NAME']}.${constant['DB_TABLE']['HASH_TAGS']} ht on ht.id = crst.hash_tag_id
 where ht.type = 2 and rsc.recipe_id = ${recipeId}`;
 
 
