@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Button } from "react-bootstrap";
+import { Card, Button, Alert } from "react-bootstrap";
 import TextInput from "../../customComponents/TextInput";
 import ErrorMessage from "../../customComponents/ErrorMessage";
 import Loader from "../../customComponents/Spinner";
@@ -12,62 +12,43 @@ import * as yup from "yup";
 import ErrorMsg from "../../customComponents/ErrorMsg";
 import SuccessMsg from "../../customComponents/SuccessMessage";
 
-const ForgotPasssword = () => {
+const EnterEmail = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const [error, setError] = useState(undefined);
-    const [success] = useState(undefined);
+    const [success, setSuccess] = useState(undefined);
     const [userState, setUserState] = useState(undefined);
     const [loading, setLoading] = useState(false);
 
     const { handleSubmit, handleChange, values, touched, errors } = useFormik({
         initialValues: { password: "", confirmPassword: "" },
         validationSchema: yup.object().shape({
-            password: yup
-                .string()
-                .required("Password is required")
-                .min(8, "Password is too short - should be 8 chars minimum."),
-            confirmPassword: yup
-                .string()
-                .required("Confirm password is required")
-                .oneOf([yup.ref("password"), null], "Passwords must match"),
+            email: yup.string().required("Email is required"),
         }),
 
         onSubmit: async () => {
             setError(undefined);
-            resetPasswordHandler(values.password, values.confirmPassword);
+            resetPasswordHandler(values.email);
         },
     });
 
-    const resetPasswordHandler = async (password, confirmPassword) => {
-        console.log(password, confirmPassword, userState);
+    const resetPasswordHandler = async (email) => {
+        console.log(email);
         setLoading(true);
-        request(
-            EndPoints.resetPassword,
-            "POST",
-            { newPassword: password, confirmPassword },
-            undefined,
-            { secretId: userState }
-        )
+        request(EndPoints.forgotPassword, "POST", { email }, undefined, {
+            secretId: userState,
+        })
             .then((res) => {
                 setLoading(false);
-                navigate(`/auth/reset-password/state`, {
-                    state: { status: res.code },
-                });
+                setSuccess(
+                    "Reset Password Link has been sent to your email ID"
+                );
             })
             .catch((err) => {
                 setLoading(false);
                 setError("Something went wrong");
             });
     };
-
-    useEffect(() => {
-        const userState = searchParams.get("secretId");
-        if (!userState) {
-            navigate("/auth/forgot-password");
-        }
-        setUserState(userState);
-    });
 
     return (
         <div className="container">
@@ -86,33 +67,23 @@ const ForgotPasssword = () => {
                     src="https://app.thedinnerdaily.com/images/manifest/icon-144x144.png"
                 />
 
-                <Card.Title>Reset Your Password</Card.Title>
+                <Card.Title>Reset Password</Card.Title>
                 <Card.Subtitle>
-                    Enter a new password below to change your password.
+                    Type in your email address with what you are signed up for
+                    our services. We will send you a reset link to your email.
                 </Card.Subtitle>
                 <Card.Body>
                     <form onSubmit={handleSubmit}>
                         <TextInput
-                            label={"New Password"}
+                            label={"Email"}
                             onFocus={() => setError(undefined)}
                             onChange={handleChange}
-                            name={"password"}
-                            type={"password"}
+                            name={"email"}
+                            type={"email"}
                         />
                         <ErrorMessage
-                            errormsg={errors?.password}
-                            touchedmsg={touched?.password}
-                        />
-                        <TextInput
-                            label={"Re-enter New Password"}
-                            onChange={handleChange}
-                            onFocus={() => setError(undefined)}
-                            name={"confirmPassword"}
-                            type={"password"}
-                        />
-                        <ErrorMessage
-                            errormsg={errors?.confirmPassword}
-                            touchedmsg={touched?.confirmPassword}
+                            errormsg={errors?.email}
+                            touchedmsg={touched?.email}
                         />
 
                         {loading && <Loader loadingMsg={"loading..."} />}
@@ -124,7 +95,7 @@ const ForgotPasssword = () => {
                             }}
                             variant="primary"
                         >
-                            Reset Password
+                            Send Reset Password Link
                         </Button>
                         {error && <ErrorMsg errormsg={error} />}
                         {success && <SuccessMsg successmsg={success} />}
@@ -135,4 +106,4 @@ const ForgotPasssword = () => {
     );
 };
 
-export default ForgotPasssword;
+export default EnterEmail;

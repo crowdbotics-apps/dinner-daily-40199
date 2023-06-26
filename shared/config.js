@@ -14,7 +14,7 @@ const database = {
 };
 
 const secret = process.env.SECRET_KEY;
-
+const adminURL = process.env.ADMIN_URL;
 
 const sendgridKey = process.env.SENDGRID_API_KEY;
 const sendgridEmail = process.env.SENDGRID_EMAIL;
@@ -50,4 +50,6 @@ module.exports = {
     firebaseDatabaseURL,
     kroger,
     migrationDate,
+    adminURL
 };
+
