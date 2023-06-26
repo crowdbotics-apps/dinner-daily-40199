@@ -1,0 +1,61 @@
+/* Common */
+
+.delete-ingredient-modal {
+    .modal-content {
+        padding: 20px;
+        align-items: center;
+    }
+
+    .provide-feedback-body {
+        width: 100%;
+        padding: 0px;
+    }
+
+    .SuccessMsg {
+        font-family: 'Open Sans';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 20px;
+        color: green;
+        margin: 20px 0px 0px 0px;
+    }
+
+    .heading {
+        font-family: 'Open Sans';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 20px;
+        line-height: 20px;
+        color: #202020;
+    }
+
+    .delete-btn-wrapper {
+        display: flex;
+        gap: 16px;
+        justify-content: flex-end;
+        margin-top: 20px;
+
+        .save-btn {
+            background: #67C3BD;
+            border-color: #67C3BD;
+            font-family: 'Montserrat';
+            font-style: normal;
+            font-weight: 600;
+            font-size: 16px;
+            line-height: 24px;
+            color: #FFFFFF;
+        }
+
+        .cancel-btn {
+            border-color: #EEF8F7;
+            background: #EEF8F7;
+            font-family: 'Montserrat';
+            font-style: normal;
+            font-weight: 600;
+            font-size: 16px;
+            line-height: 24px;
+            color: #F2786C;
+        }
+    }
+}

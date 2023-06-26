@@ -195,7 +195,7 @@ const updateUserWeekDayMenu = async (userId, userMenu, storeId, familySize = 1) 
 }
 
 // cron job to run every day at midnight to create user week menu
-cron.schedule('0 10 * * *', async () => {
+cron.schedule('0 0 * * *', async () => {
   try {
     const queryParam = dbQuery.userMenuCronQuery;;
     return await pool.query(queryParam)

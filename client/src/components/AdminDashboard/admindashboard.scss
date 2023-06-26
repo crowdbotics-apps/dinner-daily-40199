@@ -1,0 +1,378 @@
+.admin-dashboard {
+    .admin-dashboard-row {
+        display: flex;
+        gap: 26px;
+        padding: 70px 50px 10px 50px;
+        height: auto;
+
+
+        .dashboard-col {
+            height: 100%;
+            background: #F3F3F3;
+            border-radius: 20px;
+            // width: 280px;
+            min-height: 0;
+
+            .Internaluserbox {
+                text-align: left;
+                padding: 30px 15px;
+
+                .user-img {
+                    background: #F2786C;
+                    box-shadow: 0px 20px 40px rgba(240, 138, 93, 0.5);
+                    position: relative;
+                    border-radius: 50%;
+                    bottom: 50px;
+                    left: 44%;
+                    height: 40px;
+                    width: 40px;
+                }
+
+                .user-body {
+                    margin-top: -35px
+                }
+
+                .user-heading {
+                    font-family: 'Open Sans';
+                    font-style: normal;
+                    font-weight: 700;
+                    font-size: 20px;
+                    line-height: 20px;
+                    color: #F2786C;
+                }
+
+                .user-count {
+                    font-family: 'Open Sans';
+                    font-style: normal;
+                    font-weight: 600;
+                    font-size: 14px;
+                    line-height: 18px;
+                    color: #202020;
+                    margin-top: 8px;
+                }
+
+                .user-listing {
+                    .listing-box {
+                        background: #FFFFFF;
+                        border: 1px solid #F2786C;
+                        border-radius: 10px;
+                        display: flex;
+                        justify-content: space-between;
+                        padding: 6px 16px;
+                        margin: 14px 0px;
+                        // width: 248px;
+                        height: 40px;
+
+                        .left-part {
+                            font-family: 'Open Sans';
+                            font-style: normal;
+                            font-weight: 600;
+                            font-size: 14px;
+                            line-height: 18px;
+                            display: flex;
+                            align-items: center;
+
+                            color: #000000;
+                        }
+
+                        .right-part {
+                            font-family: 'Open Sans';
+                            font-style: normal;
+                            font-weight: 700;
+                            font-size: 16px;
+                            line-height: 18px;
+                            display: flex;
+                            align-items: center;
+                            text-align: right;
+
+                            color: #F2786C;
+                        }
+                    }
+                }
+
+                .view-btn {
+                    margin-top: 10px;
+                    background: #FFFFFF;
+                    border-radius: 100px;
+                    font-family: 'Montserrat';
+                    font-style: normal;
+                    font-weight: 600;
+                    font-size: 16px;
+                    line-height: 16px;
+                    color: #56BAB4;
+                }
+            }
+
+            .Subscribedusersbox {
+                text-align: left;
+                padding: 30px 15px;
+
+                .user-img {
+                    background: #B3BD35;
+                    box-shadow: 0px 20px 40px rgba(179, 189, 53, 0.5);
+                    position: relative;
+                    border-radius: 50%;
+                    bottom: 50px;
+                    left: 44%;
+                    height: 40px;
+                    width: 40px;
+                }
+
+                .user-body {
+                    margin-top: -35px
+                }
+
+                .user-heading {
+                    font-family: 'Open Sans';
+                    font-style: normal;
+                    font-weight: 700;
+                    font-size: 20px;
+                    line-height: 20px;
+                    color: #B3BD35;
+                }
+
+                .user-count {
+                    font-family: 'Open Sans';
+                    font-style: normal;
+                    font-weight: 600;
+                    font-size: 14px;
+                    line-height: 18px;
+                    color: #202020;
+                    margin-top: 8px;
+                }
+
+                .user-listing {
+                    .listing-box {
+                        background: #FFFFFF;
+                        border: 1px solid #F2786C;
+                        border-radius: 10px;
+                        display: flex;
+                        justify-content: space-between;
+                        padding: 6px 16px;
+                        margin: 14px 0px;
+                        // width: 248px;
+                        height: 40px;
+
+                        .left-part {
+                            font-family: 'Open Sans';
+                            font-style: normal;
+                            font-weight: 600;
+                            font-size: 14px;
+                            line-height: 18px;
+                            display: flex;
+                            align-items: center;
+
+                            color: #000000;
+                        }
+
+                        .right-part {
+                            font-family: 'Open Sans';
+                            font-style: normal;
+                            font-weight: 700;
+                            font-size: 16px;
+                            line-height: 18px;
+                            display: flex;
+                            align-items: center;
+                            text-align: right;
+
+                            color: #F2786C;
+                        }
+                    }
+                }
+
+                .view-btn {
+                    margin-top: 10px;
+                    background: #FFFFFF;
+                    border-radius: 100px;
+                    font-family: 'Montserrat';
+                    font-style: normal;
+                    font-weight: 600;
+                    font-size: 16px;
+                    line-height: 16px;
+                    color: #56BAB4;
+                }
+            }
+
+            .NotificationsBox {
+                text-align: left;
+                padding: 30px 15px;
+
+                .user-img {
+                    background: #3A60C6;
+                    box-shadow: 0px 20px 40px rgba(58, 96, 198, 0.5);
+                    position: relative;
+                    border-radius: 50%;
+                    bottom: 50px;
+                    left: 44%;
+                    height: 40px;
+                    width: 40px;
+                }
+
+                .user-body {
+                    margin-top: -35px
+                }
+
+                .user-heading {
+                    font-family: 'Open Sans';
+                    font-style: normal;
+                    font-weight: 700;
+                    font-size: 20px;
+                    line-height: 20px;
+                    color: #3A60C6;
+                }
+
+                .user-count {
+                    font-family: 'Open Sans';
+                    font-style: normal;
+                    font-weight: 600;
+                    font-size: 14px;
+                    line-height: 18px;
+                    color: #202020;
+                    margin-top: 8px;
+                }
+
+                .user-listing {
+                    .listing-box {
+                        background: #FFFFFF;
+                        border: 1px solid #F2786C;
+                        border-radius: 10px;
+                        display: flex;
+                        justify-content: space-between;
+                        padding: 6px 16px;
+                        margin: 14px 0px;
+                        // width: 248px;
+                        height: 40px;
+
+                        .left-part {
+                            font-family: 'Open Sans';
+                            font-style: normal;
+                            font-weight: 600;
+                            font-size: 14px;
+                            line-height: 18px;
+                            display: flex;
+                            align-items: center;
+
+                            color: #000000;
+                        }
+
+                        .right-part {
+                            font-family: 'Open Sans';
+                            font-style: normal;
+                            font-weight: 700;
+                            font-size: 16px;
+                            line-height: 18px;
+                            display: flex;
+                            align-items: center;
+                            text-align: right;
+
+                            color: #F2786C;
+                        }
+                    }
+                }
+
+                .view-btn {
+                    margin-top: 10px;
+                    background: #FFFFFF;
+                    border-radius: 100px;
+                    font-family: 'Montserrat';
+                    font-style: normal;
+                    font-weight: 600;
+                    font-size: 16px;
+                    line-height: 16px;
+                    color: #56BAB4;
+                }
+            }
+
+            .FeedbackBox {
+                text-align: left;
+                padding: 30px 15px;
+
+                .user-img {
+                    background: #EAC43C;
+                    box-shadow: 0px 20px 40px rgba(252, 185, 106, 0.54);
+                    position: relative;
+                    border-radius: 50%;
+                    bottom: 50px;
+                    left: 44%;
+                    height: 40px;
+                    width: 40px;
+                }
+
+                .user-body {
+                    margin-top: -35px
+                }
+
+                .user-heading {
+                    font-family: 'Open Sans';
+                    font-style: normal;
+                    font-weight: 700;
+                    font-size: 20px;
+                    line-height: 20px;
+                    color: #EAC43C;
+                }
+
+                .user-count {
+                    font-family: 'Open Sans';
+                    font-style: normal;
+                    font-weight: 600;
+                    font-size: 14px;
+                    line-height: 18px;
+                    color: #202020;
+                    margin-top: 8px;
+                }
+
+                .user-listing {
+                    .listing-box {
+                        background: #FFFFFF;
+                        border: 1px solid #F2786C;
+                        border-radius: 10px;
+                        display: flex;
+                        justify-content: space-between;
+                        padding: 6px 16px;
+                        margin: 14px 0px;
+                        // width: 248px;
+                        height: 40px;
+
+                        .left-part {
+                            font-family: 'Open Sans';
+                            font-style: normal;
+                            font-weight: 600;
+                            font-size: 14px;
+                            line-height: 18px;
+                            display: flex;
+                            align-items: center;
+
+                            color: #000000;
+                        }
+
+                        .right-part {
+                            font-family: 'Open Sans';
+                            font-style: normal;
+                            font-weight: 700;
+                            font-size: 16px;
+                            line-height: 18px;
+                            display: flex;
+                            align-items: center;
+                            text-align: right;
+
+                            color: #F2786C;
+                        }
+                    }
+                }
+
+                .view-btn {
+                    margin-top: 10px;
+                    background: #FFFFFF;
+                    border-radius: 100px;
+                    font-family: 'Montserrat';
+                    font-style: normal;
+                    font-weight: 600;
+                    font-size: 16px;
+                    line-height: 16px;
+                    color: #56BAB4;
+                }
+            }
+        }
+        
+    }
+}

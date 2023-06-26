@@ -261,7 +261,7 @@ const fetchShoppingIngredientForNewUser = (recipeIds = [], storeId) => `select
     ri.cooking_measurement_id as ingredient_measurement_id,
     sum(ri.amount) as amount,
     ri.is_optional,
-    case when i.shopping_name is not null
+    case when i.shopping_name is not null and i.shopping_name <> ''
     then i.shopping_name
     else i.name
     end as ingredient_name,
@@ -286,7 +286,7 @@ const fetchShoppingIngredient = (userId, storeId) => `select
     ri.cooking_measurement_id as ingredient_measurement_id,
     sum(ri.amount) as amount,
     ri.is_optional,
-    case when i.shopping_name is not null
+    case when i.shopping_name is not null and i.shopping_name <> ''
     then i.shopping_name
     else i.name
     end as ingredient_name,
@@ -307,7 +307,7 @@ const fetchShoppingIngredient = (userId, storeId) => `select
   ) pr on pr.ingredient_id = ri.ingredient_id
  where uwm.user_id = ${userId} group by pr.is_on_sale, ri.ingredient_id, cooking_measurement_id, is_optional, sl.id, pr.brand1;`;
 
- const deleteShoppingListItems = (userId) => `Delete from ${constant['DB_NAME']}.${constant['DB_TABLE']['SHOPPING_LIST_ITEMS']} sli
+ const deleteShoppingListItems = (userId) => `Delete from ${constant['DB_NAME']}.${constant['DB_TABLE']['SHOPPING_LIST_ITEMS']}
  where shopping_list_id in (select sl.id from ${constant['DB_NAME']}.${constant['DB_TABLE']['SHOPPING_LISTS']} sl
     join ${constant['DB_NAME']}.${constant['DB_TABLE']['USER_WEEK_MENUS']} uwm on  ${userId} = uwm.user_id
  where sl.user_week_menu_id = uwm.id)

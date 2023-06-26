@@ -59,7 +59,7 @@ const _fetchRecipePoolAfterUsedSideRecipe = async (userId, sideRecipePool) => {
 }
 
 // Function to create id array from id object array
-const _createRecipePoolArr = async (recipesPool) => {
+const _createRecipePoolArr = recipesPool => {
 	return recipesPool.map(recipe => recipe.id);
 }
 

@@ -1,0 +1,32 @@
+const english =  {
+  titleErrorMsg:"Title is a required",
+  contentErrorMsg:"Content is a required",
+  dateErrorMsg:"Notification Date is a required",
+  timeErrorMsg:"Notification Time is a required",
+  emailerrorMsg: "Email is a required field",
+  idErrorMsg: "ID is a required field",
+  passworderrorMsg: "Password is a required field",
+  haveAccount: "I already have an account",
+  createAccount: "Create a new account",
+  feedbackmsg: "Feedback message is a required field",
+  appidmsg: "App ID is a required field",
+  usernameErrorMsg: "User Name is a required field",
+  nameErrorMsg: "Name is a required field",
+  contactusmsg: "Message is a required field",
+  contactErrorMsg: "Mobile Number is a required field",
+  zipErrorMsg: "Zip is a required field",
+  role: "Role is a required field",
+  companyNameErrorMsg: "Company Name is a required field",
+  bankNameErrorMsg: "Bank Name is a required field",
+  accountNumberErrorMsg: "Account Number is a required field",
+  ibanNumberErrorMsg: "IBAN is a required field",
+  swiftNumberErrorMsg: " SWIFT is a required field",
+  banknameErrorMsg:"Bank Name is a required field",
+  sortorderErrorMsg: "Sort Order is a required field",
+  statusErrorMsg: "Status is a required field",
+  tierErrorMsg: "Tier is a required field",
+  recipeErrorMsg: "Recipe is a required field",
+  instructionsErrorMsg: "Instructions is a required field"
+}
+
+export default english

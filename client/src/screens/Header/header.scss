@@ -1,0 +1,18 @@
+.admin-header {
+    width: 100%;
+    background: #EEF8F7;
+    border-radius: 0px 0px 10px 0px;
+    height: 72px;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 24px 50px !important;
+    gap: 24px;
+    isolation: isolate;
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 24px;
+    color: #202020;
+}

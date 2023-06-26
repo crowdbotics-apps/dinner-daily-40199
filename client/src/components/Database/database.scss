@@ -1,0 +1,45 @@
+.database-container {
+    padding: 20px;
+
+    .database-heading {
+        display: flex;
+        font-family: 'Open Sans';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 32px;
+        line-height: 20px;
+        color: #202020;
+        margin-top: 40px;
+    }
+
+    .database-filters {
+        display: flex;
+        gap: 20px;
+        padding-top: 32px;
+        padding-bottom: 32px;
+
+        .Ingredients-btn {
+            background: #FFFFFF;
+            border-color: #FFFFFF;
+            box-shadow: 0px 4px 4px rgba(86, 186, 180, 0.2);
+            backdrop-filter: blur(2px);
+            border-radius: 10px;
+            font-family: 'Open Sans';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 24px;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: #56BAB4;
+        }
+
+        .Ingredients-btn-checked {
+            background: rgba(86, 186, 180, 0.2);
+            border: 1px solid #56BAB4;
+            box-shadow: 0px 4px 4px rgba(86, 186, 180, 0.2);
+            backdrop-filter: blur(2px);  
+        }
+    }
+}

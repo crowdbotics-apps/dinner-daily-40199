@@ -31,7 +31,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-
+app.use(express.static('client/build'));
 
   app.use(cors({origin:'*'}));
   app.use(bodyParser.json({limit: '500mb'})); // support json encoded bodies
