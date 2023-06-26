@@ -1,5 +1,5 @@
 // Base Url for api requests
-export const BASE_URL = '';
+export const BASE_URL = process.env.REACT_APP_SOURCE_URL;
 
 // successStatusCodes
 export const successStatusCode = [200, 201, 202];

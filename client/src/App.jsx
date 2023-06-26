@@ -7,6 +7,7 @@ import MainLayout from "./MainLayout";
 import { checkLoginUser } from "./api/config";
 import ResetPasssword from "./screens/Password-reset/ResetPassword";
 import ResetPasswordStatus from "./screens/Password-reset/ResetPasswordStatus";
+import EnterEmail from "./screens/Password-reset/EnterEmail";
 
 const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(checkLoginUser());
@@ -35,6 +36,7 @@ const App = () => {
         return (
             <Routes>
                 <Route path="/auth">
+                    <Route path="forgot-password" element={<EnterEmail />} />
                     <Route path="reset-password" element={<ResetPasssword />} />
                     <Route
                         path="reset-password/state"
