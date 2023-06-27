@@ -28,7 +28,7 @@ return (
           label: option?.name,
         };
       })}
-      value={multi ? Object.keys(value)?.length > 0 ? value : "" : options?.filter((option) => {
+      value={multi ? value && Object.keys(value)?.length > 0 ? value : "" : options?.filter((option) => {
           return option?.id === (stringData ? value : parseInt(value));
         })?.map((list) => {
           return {

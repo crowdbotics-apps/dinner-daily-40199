@@ -140,7 +140,7 @@ const _recipeDefaultValues = (req, data) => {
     data['number_of_servings'] = data['number_of_servings'] || 0;
     data['slug'] = (data['name'].toLowerCase().split(' ')).join('-');
     data['user_id'] = req.query.isOwnRecipe ? req.userData.id : null;
-    return data
+    return data;
 }
 
 // Functions for update ingredients data
@@ -341,7 +341,7 @@ const updateRecipe = async (req, res, cb) => {
     utils.writeInsideFunctionLog("recipe", "Update Recipe", req.body);
     let id = req.params.id;
     const defaultData = _recipeDefaultValues(req, req.body);
-    let data = { ...req.body, ...defaultData }
+    let data = { ...req.body, ...defaultData };
     resObj = Object.assign({}, utils.getErrorResObj());
     try {
         if (!!data.name) {

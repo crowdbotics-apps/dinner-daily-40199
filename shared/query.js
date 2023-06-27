@@ -316,10 +316,16 @@ const fetchShoppingIngredient = (userId, storeId) => `select
  const selectStoreQuery = (stateId) => `SELECT st.id, st.name FROM ${constant['DB_NAME']}.${constant['DB_TABLE']['STATE_STORE_MAPPING']} ss
  join ${constant['DB_NAME']}.${constant['DB_TABLE']['STORES']} st on ss.store_id = st.id where ss.state_id = ${stateId};`;
 
- const fetchStateStoreQuery = (storeId) => `SELECT st.id, st.name FROM ${constant['DB_NAME']}.${constant['DB_TABLE']['STATE_STORE_MAPPING']} ss
- join ${constant['DB_NAME']}.${constant['DB_TABLE']['STATES']} st on ss.state_id = st.id where ss.store_id = ${storeId};`;
-
-const fetchStoreIngSaleQuery = (storeId) => `Select count(*) as total from ${constant['DB_NAME']}.${constant['DB_TABLE']['PRICES']} where store_id = ${storeId} and is_on_sale = 1 and start_date <= CURDATE() AND stop_date >= CURDATE()`;
+ const fetchStateStoreQuery = `SELECT store.*, CONCAT('[', GROUP_CONCAT(CONCAT('{"id": ', state.id, ', "name": "', state.name, '"}')), ']') AS state,
+    IFNULL(COUNT(prices.ingredient_id), 0) AS specials
+    FROM ${constant['DB_NAME']}.${constant['DB_TABLE']['STORES']} store
+    LEFT JOIN ${constant['DB_NAME']}.${constant['DB_TABLE']['STATE_STORE_MAPPING']} stm ON store.id = stm.store_id
+    LEFT JOIN ${constant['DB_NAME']}.${constant['DB_TABLE']['STATES']} state ON stm.state_id = state.id
+    LEFT JOIN ${constant['DB_NAME']}.${constant['DB_TABLE']['PRICES']} prices ON store.id = prices.store_id
+        AND prices.is_on_sale = 1
+        AND prices.start_date <= CURDATE()
+        AND prices.stop_date >= CURDATE()
+    GROUP BY store.id, store.name;`;
 
 const fetchStoreSpecialQuery = (storeId) => `select p.id, p.ingredient_id, p.created, p.is_on_sale, i.name from ${constant['DB_NAME']}.${constant['DB_TABLE']['PRICES']} p
     left join ${constant['DB_NAME']}.${constant['DB_TABLE']['INGREDIENTS']} i on  i.id = p.ingredient_id
@@ -447,7 +453,6 @@ module.exports = {
     fetchStateStoreQuery,
     fetchAdminRecipeQuery,
     fetchSidesQuery,
-    fetchStoreIngSaleQuery,
     fetchStoreSpecialQuery,
     updateStoreSpecialQuery,
     fetchUserDietPlanOptions,

@@ -62,7 +62,9 @@ const Notifications = () => {
     }
 
     const getStoreList = async () => {
-        request(EndPoints.store, "GET").then((res) => {
+        request(EndPoints.store, "GET", undefined, true, {
+            notification: true,
+        }).then((res) => {
             setStoreList([...res.data]);
         });
     };

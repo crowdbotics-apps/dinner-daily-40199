@@ -79,7 +79,8 @@ const AddNewStore = (props) => {
     if(props?.editdata?.id){
       const fields = Object.keys(props?.editdata);
       fields.forEach(field => setFieldValue(field, props?.editdata[field] || "", false));
-      setState(multiSelectValue(props?.editdata?.state))
+      const state = props?.editdata?.state && typeof(props.editdata.state) === 'string' ? JSON.parse(props.editdata.state) : props?.editdata?.state;
+      setState(multiSelectValue(state))
     }
   },[props.editdata])
 

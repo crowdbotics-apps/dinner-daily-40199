@@ -8,56 +8,12 @@ const utils = rfr('/shared/utils');
 const helper = rfr('/shared/helper');
 const dbQuery = rfr('/shared/query');
 
-// Function to fetch state with store id
-const _fetchStateData = async (storeData) => {
-    let promiseArr = [];
-    for (let i = 0; i < storeData.length; i++) {
-        let storeId = storeData[i]['id'];
-        let queryParam = dbQuery.fetchStateStoreQuery(storeId);
-        promiseArr.push(pool.query(queryParam));
-    }
-    return await Promise.all(promiseArr).then((res) => {
-        storeData.forEach((store, index) => {
-            store['state'] = res[index].length ? res[index][0] : [];
-        });
-        return storeData;
-    }).catch(err => {
-        utils.writeErrorLog('store', '_fetchStateData', 'Error while fetching stores data', err);
-        throw err;
-    });
-}
 
-// Function to fetch count of ingredient sale for a store
-const _fetchStoreSpecialData = async (storeData) => {
-    let promiseArr = [];
-    for (let i = 0; i < storeData.length; i++) {
-        let storeId = storeData[i]['id'];
-        let queryParam = dbQuery.fetchStoreIngSaleQuery(storeId);
-        promiseArr.push(pool.query(queryParam));
-    }
-    return await Promise.all(promiseArr).then((res) => {
-        storeData.forEach((store, index) => {
-            store['specials'] = res[index].length ? res[index][0][0]['total'] : [];
-        });
-        return storeData;
-    }).catch(err => {
-        utils.writeErrorLog('store', '_fetchStateData', 'Error while fetching store special data from prices table', err);
-        throw err;
-    });
-}
-
-
-//Common function to fetch stores their state from database
-const _fetchStore = async (queryParam, isNotification) => {
+//Common function to fetch stores tand their state and sale special data from database
+const _fetchStore = async (queryParam) => {
     utils.writeInsideFunctionLog("store", "_fetchStore");
-    return await pool.query(queryParam).then(async ([results]) =>{
-        if (!isNotification) {
-            return results;
-        } else {
-            const storeData = results;
-            await _fetchStateData(storeData);
-            return await _fetchStoreSpecialData(storeData);
-        }
+    return await pool.query(queryParam).then(async ([results]) => {
+        return results;
     }).catch((error) => {
         utils.writeErrorLog('store', '_fetchStore', 'Error while fetching stores  and their state', error, queryParam);
         throw  error;
@@ -96,13 +52,10 @@ const getStores = async (req, res, cb) => {
 	let resObj = Object.assign({}, utils.getErrorResObj());
     let isNotification = req.query.notification;
     const paginationObj = helper.getPagination(req.query?.page, req.query?.pageSize,req.query?.sortField,req.query?.sortValue);
-    let queryParam = dbQuery.selectQuery(constant['DB_TABLE']['STORES'], [], {}, paginationObj);
+    let queryParam = (!!isNotification && isNotification == 'true') ? dbQuery.selectQuery(constant['DB_TABLE']['STORES'], [], {}, paginationObj) : dbQuery.fetchStateStoreQuery;
     try {
         const storeData = await _fetchStore(queryParam, isNotification);
-        // const selectQuery = dbQuery.selectQuery(constant['DB_TABLE']['STORES'],["count(*) as total_items"],{},{});
-        // const resultData = await pool.query(selectQuery);
-        // const total_item = resultData[0];
-        resObj = Object.assign({data: storeData,total_items: storeData.length}, utils.getSuccessResObj());
+        resObj = Object.assign({data: storeData, total_items: storeData.length}, utils.getSuccessResObj());
         cb(resObj);
     } catch (err) {
         resObj['message'] = constant['OOPS_ERROR'];
