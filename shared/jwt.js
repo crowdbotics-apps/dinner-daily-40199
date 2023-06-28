@@ -10,6 +10,7 @@ const pool = rfr("/db/index");
 /** Used to check valid authorization token provided in headers*/
 const userAuthentication = (req, res, next) => {
   let token = req.headers['authorization'];
+  console.log('User authentication token ->', token);
   let resObj = Object.assign({}, utils.getErrorResObj());
   /**check authorization token in header */
   if (!token) {
@@ -20,6 +21,7 @@ const userAuthentication = (req, res, next) => {
   /** decode JWT Authorization token */
   jwt.verify(token, config.secret, (err, decoded) => {
     if (err) {
+      console.log('Authentication error ->', err);
       resObj['code'] = constant['RES_OBJ']['CODE']['UNAUTHORIZED'];
       resObj['message'] = constant["AUTH_FAIL"];
       return utils.sendResponse(res, resObj);
