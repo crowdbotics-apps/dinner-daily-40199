@@ -118,9 +118,9 @@ const updateStore = async (req, res, cb) => {
        const updateData = _formateStoreData(req.body, storeId);
        const queryParam = dbQuery.updateQuery(constant['DB_TABLE']['STORES'], updateData, {id: storeId});
        await pool.query(queryParam).then(async (resp) => {
-        if(req.body?.state.length){
-            const queryParamState = dbQuery.deleteQuery(constant['DB_TABLE']['STATE_STORE_MAPPING'], {store_id:storeId});
-            await pool.query(queryParamState);
+        const queryParamState = dbQuery.deleteQuery(constant['DB_TABLE']['STATE_STORE_MAPPING'], {store_id:storeId});
+        await pool.query(queryParamState);
+        if(!!req.body.state && req.body.state.length){
             await _saveStateData(req.body?.state, storeId);
         }
         resObj = Object.assign({data: {...updateData}}, utils.getSuccessResObj());

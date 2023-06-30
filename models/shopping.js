@@ -43,7 +43,7 @@ const shoppingSaleDetail = (req, res, cb) => {
 const shoppingCategories = (req, res, cb) => {
 	utils.writeInsideFunctionLog('shopping', 'shoppingCategories');
     let resObj = Object.assign({}, utils.getErrorResObj());
-    const paginationObj = helper.getPagination(req.query?.page, req.query?.pageSize, req.query?.sortField, 'desc');
+    const paginationObj = helper.getPagination(req.query?.page, req.query?.pageSize, 'sort_order', 'asc');
     const queryParam = dbQuery.selectQuery(constant['DB_TABLE']['SHOPPING_CATEGORIES'], ['id', 'name'], {}, paginationObj);
 	pool.query(queryParam)
     .then(resp => {

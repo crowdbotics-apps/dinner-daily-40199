@@ -52,6 +52,7 @@ const AddNewStore = (props) => {
       try {
         let resp
         if(props?.editdata?.id){
+          delete payLoadBody.specials;
           resp = await updateStores(payLoadBody,props?.editdata?.id);
         }else{
          resp = await addStores(payLoadBody);

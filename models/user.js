@@ -341,20 +341,20 @@ const logout = async (req, res, cb) => {
 
 }
 
-const _getPasswordResetMailContent = (token, from) => {
+const _getPasswordResetMailContent = (token, from, webUrl) => {
   return `<p>Dear User,</p>
   <p>This e-mail is in response to your recent request to ${from === 'forgot' ? 'recover a forgotten' : 'reset your expired'} password. Password security features are in place to ensure the security of your profile information. To reset your password, please click the link below and follow the instructions provided.</p>
   <p>
-    <a href=${config.adminURL}/auth/reset-password?secretId=${token} target='_blank'>${config.adminURL}/auth/reset-password?secretId=${token}</a>
+    <a href=${config.adminURL}/auth/reset-password?secretId=${token}&web=${!!webUrl} target='_blank'>${config.adminURL}/auth/reset-password?secretId=${token}&web=${!!webUrl}</a>
   </p>
   <p>This link will remain active for the next 5 minutes.</p>
   <p>Please do not reply to this e-mail.</p>`;
 }
 
-const _sendResetPasswordMail = async (email, password, from) => {
+const _sendResetPasswordMail = async (email, password, from, webUrl) => {
 	const token = jwt.getTokenForForgotPassword({ email, password });
 	const emailHeading = (from === 'forgot' ? constant['FORGOT_PASSWORD'] : constant['RESET_PASSWORD']);
-	const msg = helper.emailMsgFormat(email, emailHeading, '', _getPasswordResetMailContent(token, from));
+	const msg = helper.emailMsgFormat(email, emailHeading, '', _getPasswordResetMailContent(token, from, webUrl));
 	return await sgMail.send(msg).then(() => {
 		return constant["EMAIL_SEND_SUCCESS"];
 	}).catch((error) => {
@@ -379,7 +379,8 @@ const forgotPassword = async (req, res, cb) => {
 					resObj['message'] = constant['SOCIAL_CHANGE_PASS_ERROR'];
 					return cb(resObj);
 				}
-				_sendResetPasswordMail(resultData[0]['email'], resultData[0]['password'], 'forgot'). then(resp => {
+				const webUrl = !!req.url.includes('/auth');
+				_sendResetPasswordMail(resultData[0]['email'], resultData[0]['password'], 'forgot', webUrl). then(resp => {
 					resObj = Object.assign({}, utils.getSuccessResObj());
 					resObj['message'] = resp;
 					cb(resObj);

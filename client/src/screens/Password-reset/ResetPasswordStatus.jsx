@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Card, Button } from "react-bootstrap";
 import "./style.scss";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams, useNavigate } from "react-router-dom";
+
 const data = {
     200: {
         title: "Password Changed!",
@@ -25,13 +26,23 @@ const ForgotPasswordStatus = () => {
     const [searchParams] = useSearchParams();
     const location = useLocation();
     const [status, setStatus] = useState(undefined);
+    const [isWeb, setIsWeb] = useState(undefined);
+    const navigate = useNavigate();
 
     //add location as dependency
     useEffect(() => {
         const currentStatus = location.state.status;
+        setIsWeb(location.state.web ?? false);
         setStatus(data[currentStatus]);
     }, []);
 
+    const webUrlHandler = () => {
+        if (isWeb == 'true') {
+            navigate('/');
+        } else {
+            window.location.open('example://www.myapp.com/anystring');
+        }
+    }
     return (
         <div className="container">
             {status && (
@@ -54,6 +65,7 @@ const ForgotPasswordStatus = () => {
                         <Card.Subtitle>{status.subtitle}</Card.Subtitle>
                         <Card.Body></Card.Body>
                         <Button
+                            onClick={webUrlHandler}
                             style={{
                                 backgroundColor: "#F2786C",
                                 borderWidth: 0,

@@ -72,7 +72,6 @@ getHandler['/api/v1/menuGeneration'] = algorithmCtrl.createUserMenu;
 postHandler['/api/v1/login'] = userCtlr.login;
 postHandler['/api/v1/logout'] = userCtlr.logout;
 postHandler['/api/v1/forgotPassword'] = userCtlr.forgotPassword;
-postHandler['/api/v1/resetPassword'] = userCtlr.resetPassword;
 postHandler['/auth/api/v1/forgotPassword'] = userCtlr.forgotPassword;
 postHandler['/auth/api/v1/resetPassword'] = userCtlr.resetPassword;
 postHandler['/api/v1/inviteFriend'] = userCtlr.inviteFriend;

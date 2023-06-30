@@ -7,7 +7,7 @@ const EndPoints = {
     admindeleteuser: "api/v1/admin/user/",
     ingedients: "api/v1/admin/ingredient/",
     recipe: "api/v1/admin/recipe/",
-    store: "api/v1/admin/store",
+    store: "api/v1/admin/store/",
     state: "api/v1/admin/state/",
     tag: "api/v1/admin/tag",
     notification: "api/v1/admin/notification",

@@ -18,6 +18,7 @@ const ForgotPasssword = () => {
     const [error, setError] = useState(undefined);
     const [success] = useState(undefined);
     const [userState, setUserState] = useState(undefined);
+    const [isWeb, setIsWeb] = useState(undefined);
     const [loading, setLoading] = useState(false);
 
     const { handleSubmit, handleChange, values, touched, errors } = useFormik({
@@ -52,7 +53,7 @@ const ForgotPasssword = () => {
             .then((res) => {
                 setLoading(false);
                 navigate(`/auth/reset-password/state`, {
-                    state: { status: res.code },
+                    state: { status: res.code, web: isWeb },
                 });
             })
             .catch((err) => {
@@ -63,10 +64,12 @@ const ForgotPasssword = () => {
 
     useEffect(() => {
         const userState = searchParams.get("secretId");
+        const web = searchParams.get("web") ?? false;
         if (!userState) {
-            navigate("/auth/forgot-password");
+            navigate("/404");
         }
         setUserState(userState);
+        setIsWeb(web);
     });
 
     return (

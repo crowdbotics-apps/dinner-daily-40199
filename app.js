@@ -2,7 +2,6 @@
 
 const PrettyError = require('pretty-error');
 
-console.log("NODE VERSION ----->>>",process.version)
 const rfr = require('rfr');
 const express = require('express');
 const http = require('http');
@@ -13,8 +12,9 @@ const utils = rfr('/shared/utils');
 const routes = rfr('/routes');
 const notificationModel = rfr('/models/admin/notification');
 const config = require('./server/config/config.js');
-const database  = rfr('/db/index');
+rfr('/db/index');
 
+rfr('/shared/logger');
 
 // Initialize pretty-error
 const pe = new PrettyError();
@@ -54,7 +54,7 @@ app.use(express.static('client/build'));
   //  utils.log('Server started successfully on port -->', config.port);
    routes.bindAllRequests(app);
    app.use(rfr('/universalRoute.js'));
-   // notificationModel.reshceduleNotification();
+   notificationModel.reshceduleNotification();
   });
 
 
