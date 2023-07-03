@@ -136,7 +136,7 @@ const _recipeDefaultValues = (req, data) => {
     data['is_tested'] = data['is_tested'] || 0;
     data['is_ok_for_half'] = data['is_ok_for_half'] || 0;
     data['dish_type'] = data['dish_type'] || constant['DISH_TYPE'];
-    data['status'] = req.query.isOwnRecipe ? constant['DISH_STATUS'] : data['status'] || constant['DISH_STATUS'];
+    data['status'] = req.query.isOwnRecipe ? constant['DISH_STATUS'] : data['status'];
     data['number_of_servings'] = data['number_of_servings'] || 0;
     data['slug'] = (data['name'].toLowerCase().split(' ')).join('-');
     data['user_id'] = req.query.isOwnRecipe ? req.userData.id : null;
@@ -146,16 +146,16 @@ const _recipeDefaultValues = (req, data) => {
 // Functions for update ingredients data
 const _updateIngredientData = async (ingredients) => {
     for (let i = 0; i < ingredients.length; i++) {
-        // if (ingredients[i].id === 'new') {
-        //     const updateObj = (({ id, ...other }) => other)(ingredients[i])
-        //     const { columns, valuesArr } = utils.formatRequestDataForInsert([updateObj]);
-        //     const queryParam = dbQuery.insertQuery(constant['DB_TABLE']['RECIPE_INGREDIENTS'], columns);
-        //     await pool.query(queryParam, [valuesArr]);
-        // } else {
+        if (ingredients[i].id === 'new') {
+            const updateObj = (({ id, ...other }) => other)(ingredients[i])
+            const { columns, valuesArr } = utils.formatRequestDataForInsert([updateObj]);
+            const queryParam = dbQuery.insertQuery(constant['DB_TABLE']['RECIPE_INGREDIENTS'], columns);
+            await pool.query(queryParam, [valuesArr]);
+        } else {
             const condObj = ingredients[i].id ? { id: ingredients[i].id } : {recipe_id: ingredients[i].recipe_id, ingredient_id: ingredients[i].ingredient_id};
             const updateQueryParam = dbQuery.updateQuery(constant['DB_TABLE']['RECIPE_INGREDIENTS'], ingredients[i], condObj);
             await pool.query(updateQueryParam);
-        // }
+        }
     }
 }
 
@@ -351,7 +351,7 @@ const updateRecipe = async (req, res, cb) => {
             await pool.query(updateQueryParam).then(async (resp) => {
                 let ingredientsArr = []
                 if (data?.ingredients && data?.ingredients.length) {
-                    ingredientsArr = await _formatIngredientsData(data.ingredients, id, '', true);
+                    ingredientsArr = await _formatIngredientsData(data.ingredients, id, req.userData.id, true);
                     await _updateIngredientData(ingredientsArr);
                 }
                 if (!!data.sides && !!data.sides.length) {

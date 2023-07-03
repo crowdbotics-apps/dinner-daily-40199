@@ -100,6 +100,7 @@ const insertDataInUserWeekMenu = async (userId, userMenu, storeId, familySize = 
   const weekMenuData = helper.weekMenu;
   weekMenuData['user_id'] = userId;
   weekMenuData['store_id'] = storeId;
+  utils.log('User week menu data inside insert function: ', weekMenuData);
   let { columns, valuesArr } = utils.formatRequestDataForInsert([weekMenuData]);
   const insertQueryParam = dbQuery.insertQuery(constant['DB_TABLE']['USER_WEEK_MENUS'], columns);
   const conn = await pool.getConnection();
@@ -195,25 +196,28 @@ const updateUserWeekDayMenu = async (userId, userMenu, storeId, familySize = 1) 
 }
 
 // cron job to run every day at midnight to create user week menu
-cron.schedule('0 0 * * *', async () => {
+cron.schedule('0 6 * * *', async () => {
   try {
     const queryParam = dbQuery.userMenuCronQuery;;
     return await pool.query(queryParam)
     .then(async ([resp]) => {
       for (let i = 0; i < resp.length; i++) {
         try {
-          utils.writeInsideFunctionLog('userMenu', 'cronJob started for - ', resp[i].id);
+          utils.writeInsideFunctionLog('userMenu', 'cronJob started for - ', resp[i].id, new Date());
           utils.log('Cron job started for ->', resp[i].id);
+          console.log('Cron job started for ->', resp[i].id);
           const userMenu = await algorithmModel.createMenu(resp[i], 'update');
           await insertDataInUserWeekMenu(resp[i].id, userMenu, resp[i]['preferred_store_id'], resp[i]['family_size']);
           utils.writeInsideFunctionLog('userMenu', 'cronJob', 'data end for user');
           utils.log('data end for user');
+          console.log('data end for user');
         } catch (error) {
           utils.writeErrorLog('menuGenerator', 'cronJob', 'Error while creating user menu for every week through node cron for user: ', resp[i].id, error);
           continue;
         }
       }
       utils.log('Menu generation cron job task has been done');
+      console.log('Menu generation cron job task has been done');
       return true;
     }).catch(err => {
         utils.writeErrorLog('menuGenerator', 'cronJob', 'Error while fetching user whose menu need to generate', err);

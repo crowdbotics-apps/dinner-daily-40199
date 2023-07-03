@@ -11,6 +11,7 @@ const balanceRules = rfr('/models/algorithm/balanceRules');
 const restrictionRules = rfr('/models/algorithm/restrictionRules');
 const finalRules = rfr('/models/algorithm/finalRules');
 const recipePool = rfr('/models/algorithm/recipePool');
+const recipeNotUsedScorer = rfr('/models/algorithm/recipeNotUsedScorer');
 const scorer = rfr('/models/algorithm/scorer');
 
 let userRestrictionRuleSets = [];
@@ -63,17 +64,6 @@ const _createRecipePoolArr = recipesPool => {
 	return recipesPool.map(recipe => recipe.id);
 }
 
-// Function to insert / update recipe score in recipe not used scorer table.
-// const _insertInRecipeNotUsedScore = (requestFor, recipePoolArray) => {
-// 	let queryParam = '';
-// 	if (requestFor === 'create') {
-// 		queryParam
-// 	} else if (requestFor === 'update') {
-
-// 	}
-// 	return ;
-// }
-
 // Comon function to apply rules and return recipe pool after applying rules
 const _applyRules = async (selectedRecipeArr, recipePoolArray, userRestrictionRuleSets, ruleKey) => {
 	let filterRuleConditions = await ruleConditions.get(selectedRecipeArr);
@@ -94,7 +84,7 @@ const _getMainMenuRecipes = async (userData, seasonArray, userRestrictionRuleSet
 	let recipesPoolAfterRemovalOfUsedRecipe = await _fetchRecipePoolAfterUsedRecipe(userData.id, recipesPoolAfterRemovalOfNonSeasonalRecipes);
 	let recipePoolArray = _createRecipePoolArr(recipesPoolAfterRemovalOfUsedRecipe);
 	// insert/update score in recipeNotUsedScoreTable
-	// await _insertInRecipeNotUsedScore(recipePoolArray, requestFor);
+	await recipeNotUsedScorer.insertInRecipeNotUsedScore(requestFor, recipePoolArray, userData.id);
 	let selectedRecipeArr = [];
 	for (let index = 0; index < 10; index++) {
 		//Apply main dish rules

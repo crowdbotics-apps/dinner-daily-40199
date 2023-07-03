@@ -7,5 +7,6 @@ CREATE TABLE `recipeNotUsedScore` (
   `score` int(11) NOT NULL DEFAULT 0,
   `created` datetime NOT NULL,
   `updated` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  CONSTRAINT unique_recipe_user UNIQUE (recipe_id, user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;`

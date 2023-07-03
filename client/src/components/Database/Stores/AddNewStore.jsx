@@ -33,7 +33,6 @@ const AddNewStore = (props) => {
     initialValues: storeInitialValues,
     validationSchema: storeSchema,
     onSubmit: async () => {
-      setisLoading(true);
       const payLoadBody = {
         ...values,
         sale_period_end: parseInt(values?.sale_period_end),
@@ -51,6 +50,7 @@ const AddNewStore = (props) => {
       }
       try {
         let resp
+        setisLoading(true);
         if(props?.editdata?.id){
           delete payLoadBody.specials;
           resp = await updateStores(payLoadBody,props?.editdata?.id);

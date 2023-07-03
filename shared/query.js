@@ -126,7 +126,7 @@ const updateQuery = (table, dataObj, conditionObj = {}) => {
     return query;
 }
 
-const updateWithDuplicateKeyQuery = (table, dataArr, dupColumn = []) => {
+const updateWithDuplicateKeyQuery = (table, dataArr, dupColumn = [], from) => {
     let keys = Object.keys(dataArr[0]);
     let values = dataArr.map( obj => keys.map(key => obj[key]));
     let query = `Insert into ${constant['DB_NAME']}.${table} (${keys.join(', ')}) values`;
@@ -140,9 +140,9 @@ const updateWithDuplicateKeyQuery = (table, dataArr, dupColumn = []) => {
     query += ` on duplicate key update `;
     for (let i = 0; i < dupColumn.length; i++) {
         if (i === dupColumn.length - 1) {
-            query += `${dupColumn[i]} = values(${dupColumn[i]})`;
+            query += (from === 'menu') ? `${dupColumn[i]} = ${dupColumn[i]}+5`: `${dupColumn[i]} = values(${dupColumn[i]})`;
         } else {
-            query += `${dupColumn[i]} = values(${dupColumn[i]}), `;
+            query += (from === 'menu') ? `${dupColumn[i]} = ${dupColumn[i]}+5,`: `${dupColumn[i]} = values(${dupColumn[i]}), `;
         }
     }
     return query;

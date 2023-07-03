@@ -28,6 +28,7 @@ const get = async (recipePool, userData) => {
       return recipePool;
     }).catch(err => {
       utils.writeErrorLog('favoriteScorer', 'get', 'Error while assigning favorite scorer to recipes', err, queryParam);
+      recipePool.forEach(recipe => recipe['favoriteScore'] = noScore);
       return recipePool;
     })
   } else {

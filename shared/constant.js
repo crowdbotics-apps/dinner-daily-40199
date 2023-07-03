@@ -129,6 +129,7 @@ module.exports = {
 		'MEDIA_MEDIA': 'media__media',
 		'NEW_BALANCE_RULE_SETS': 'newbalancerulesets',
 		'NEW_RESTRICTION_RULE_SETS': 'newrestrictionrulesets',
+		'RECIPE_NOT_USED_SCORE': 'recipeNotUsedScore'
 	},
 	'DB_VIEW': {
 		'SHOPPING_LIST_ITEMS_VIEW': 'shopping_list_items_view',
