@@ -13,7 +13,7 @@ const dbObj = config['database'];
 
 //let pool = mysql.createPool('mysql://be2fbda272a899:df8486ac@us-cdbr-east-06.cleardb.net/heroku_52b3caaac7494c9?reconnect=true');
 
-
+console.log('db url', process.env.CLEARDB_AMBER_URL);
 let pool = mysql.createPool({
   connectionLimit: 50,
   host: 'us-cdbr-east-06.cleardb.net',
