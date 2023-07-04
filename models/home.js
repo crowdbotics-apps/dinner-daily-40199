@@ -13,10 +13,10 @@ const homeContent = async (req, res, cb) => {
     let promiseArr = [];
     let queryParam = '';
     if (req.query.week === 'previous') {
-        queryParam = dbQuery.selectQuery(constant['DB_VIEW']['SHOPPING_LIST_ITEMS_VIEW'], ['count(*) as count'], {user_id: req.userData.id, is_on_sale: 1, 'DATE(start_date)>=': `DATE_SUB(CURDATE(), INTERVAL 13 DAY)`, 'DATE(start_date)<': `DATE_SUB(CURDATE(), INTERVAL 6 DAY)`});
+        queryParam = dbQuery.selectQuery(constant['DB_VIEW']['SHOPPING_LIST_ITEMS_VIEW'], ['count(*) as count'], {user_id: req.userData.id, is_on_sale: 1, 'DATE(start_date)>': `DATE_SUB(CURDATE(), INTERVAL 13 DAY)`, 'DATE(start_date)<': `DATE_SUB(CURDATE(), INTERVAL 6 DAY)`});
         promiseArr.push(pool.query(queryParam));
         // shopping category - 5 for Produce (fruits and vegetables)
-        queryParam = dbQuery.selectQuery(constant['DB_VIEW']['SHOPPING_LIST_ITEMS_VIEW'], ['count(*) as count'], {user_id: req.userData.id, shopping_category: 5, 'DATE(start_date)>=': `DATE_SUB(CURDATE(), INTERVAL 13 DAY)`, 'DATE(start_date)<': `DATE_SUB(CURDATE(), INTERVAL 6 DAY)`});
+        queryParam = dbQuery.selectQuery(constant['DB_VIEW']['SHOPPING_LIST_ITEMS_VIEW'], ['count(*) as count'], {user_id: req.userData.id, shopping_category: 5, 'DATE(start_date)>': `DATE_SUB(CURDATE(), INTERVAL 13 DAY)`, 'DATE(start_date)<': `DATE_SUB(CURDATE(), INTERVAL 6 DAY)`});
         promiseArr.push(pool.query(queryParam));
     } else {
         queryParam = dbQuery.selectQuery(constant['DB_VIEW']['SHOPPING_LIST_ITEMS_VIEW'], ['count(*) as count'], {user_id: req.userData.id, is_on_sale: 1, 'DATE(start_date)>': `DATE_SUB(CURDATE(), INTERVAL 6 DAY)`});
