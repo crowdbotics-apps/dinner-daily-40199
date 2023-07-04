@@ -211,7 +211,7 @@ join ${constant['DB_NAME']}.${constant['DB_TABLE']['USER_WEEK_MENUS']} uwm on uw
 join ${constant['DB_NAME']}.${constant['DB_TABLE']['RECIPES']} r on r.id = uwdm.main_recipe_id
 left join ${constant['DB_NAME']}.${constant['DB_TABLE']['NUTRITIONAL_PROFILE']} np on np.id = r.nutritional_profile_id
 left join ${constant['DB_NAME']}.${constant['DB_TABLE']['FAVORITES']} f on f.user_id = uwm.user_id and r.id = f.recipe_id
-where uwm.user_id = ${userId} and YEARWEEK(uwm.created) = ${week === 'previous' ? 'YEARWEEK(CURDATE() - INTERVAL 1 WEEK)' : 'YEARWEEK(CURDATE())'}`;
+where uwm.user_id = ${userId} and ${week === 'previous' ? 'DATE(uwm.created) >= DATE_SUB(CURDATE(), INTERVAL 13 DAY) and DATE(uwm.created) <= DATE_SUB(CURDATE(), INTERVAL 7 DAY)' : 'DATE(uwm.created) >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)'}`;
 
  const fetchSideRecipeQuery = (weekDayMenuId, userId) => `select r.*, r.id as recipe_id, np.*,
  CASE
@@ -414,8 +414,7 @@ const randomSideDishQuery = (recipePool) => `SELECT id FROM ${constant['DB_NAME'
     where (tag_names like '%simple salad%' or tag_names like '%reduced%') and id in (${recipePool}) ORDER BY RAND() LIMIT 1;`;
 
 const getUserCurrentWeekMenuQuery = (userId) => `SELECT * FROM ${constant['DB_NAME']}.${constant['DB_TABLE']['USER_WEEK_MENUS']}
-    WHERE user_id = ${userId} and
-    YEARWEEK(start_date) = YEARWEEK(CURDATE());`;
+    WHERE user_id = ${userId} and DATE(created) >= DATE_SUB(CURDATE(), INTERVAL 6 DAY);`;
 
 const selectWeekMenuAlternativesQuery = (userId) => `select uwma.recipe_id as id, r.name, r.protein_category, uwma.is_on_sale
     from ${constant['DB_NAME']}.${constant['DB_TABLE']['USER_WEEK_DAY_MENU_ALTERNATIVES']} uwma
