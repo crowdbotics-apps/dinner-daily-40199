@@ -46,7 +46,7 @@ const get = async (recipePoolArray, filterRuleConditions, ruleKey) => {
           }
           if (!!queryParam) {
             if (ruleKey === constant['RULE_KEY']['MEAL_RULES'] || ruleKey === constant['RULE_KEY']['MAIN_AND_SIDE_DISH_RULES']) {
-              queryParam += ` and values < ${rules} `;
+              queryParam += ` and value < ${rules} `;
             }
             promiseArray.push(pool.query(queryParam));
           }

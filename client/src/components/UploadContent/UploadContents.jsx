@@ -43,7 +43,7 @@ const UploadContent = ({ formdata, formtype, updatecontent }) => {
                 ...values,
                 created: formateDateTime(values?.created),
             };
-            let resp = await updateUploadContent(payload, values?.id);
+            let resp = await updateUploadContent(payload, values?.id, values.content_type === "Member News");
             if (resp?.status) {
                 updatecontent(resp?.data);
             } else {

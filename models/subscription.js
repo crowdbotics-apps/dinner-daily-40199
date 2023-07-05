@@ -108,42 +108,6 @@ const getSubscriptionPlanList = async (req, res, cb) => {
     };
 }
 
-// Function to create a subscription for payment in user
-// const createPaymentIntent = async (req, res, cb) => {
-//     const reqBody = req['body'];
-// 	utils.writeInsideFunctionLog('subscription', 'createPaymentIntent', reqBody);
-//     let resObj = Object.assign({}, utils.getErrorResObj());
-//     try {
-//         const customer = await stripe.customers.create({
-//             email: req.userData.email,
-//             name: req.userData.name,
-//         });
-//         const ephemeralKey = await stripe.ephemeralKeys.create(
-//             {customer: customer.id},
-//             {apiVersion: '2020-08-27'}
-//         );
-//         const paymentIntent = await stripe.paymentIntents.create({
-//             amount: reqBody.amount,
-//             currency: reqBody.currency,
-//             customer: customer.id,
-//             payment_method_types: ['card'],
-//         });
-
-//         let respObj = {
-//             paymentIntent: paymentIntent.client_secret,
-//             ephemeralKey: ephemeralKey.secret,
-//             customerId: customer.id,
-//             publishableKey: config['stripe']['publishableKey']
-//         };
-//         resObj = Object.assign({data: respObj}, utils.getSuccessResObj());
-//         cb(resObj);
-//     } catch(err) {
-//         resObj['message'] = err.message || err;
-//         utils.writeErrorLog('subscription', 'createPaymentIntent', 'Error while creating payment intent for payment', err);
-//         cb(resObj);
-//     };
-// }
-
 // Function to create a user subscription for payment in user
 const createUserSubscription = async (req, res, cb) => {
     const reqBody = req['body'];

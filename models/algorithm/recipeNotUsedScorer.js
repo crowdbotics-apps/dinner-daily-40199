@@ -25,27 +25,20 @@ const insertInRecipeNotUsedScore = async (requestFor, recipePoolArray, userId) =
   try {
     utils.writeInsideFunctionLog('recipeNotUsedScorer', 'insertInRecipeNotUsedScore', recipePoolArray);
     if (requestFor === 'create' || requestFor === 'updated') {
-      // const lastWeekUsedRecipeQueryParam = dbQuery.fetchLastWeekRecipeQuery(userId);
-      // pool.query(lastWeekUsedRecipeQueryParam)
-      // .then(async ([usedRecipeArray]) => {
-        let promiseArray = [];
-        const updateRecipeScoreObj = _formatRecipeScoreData(recipePoolArray, userId);
-        let updateQueryParam = dbQuery.updateWithDuplicateKeyQuery(constant['DB_TABLE']['RECIPE_NOT_USED_SCORE'], updateRecipeScoreObj, ['score'], 'menu');
-        promiseArray.push(pool.query(updateQueryParam));
+      let promiseArray = [];
+      const updateRecipeScoreObj = _formatRecipeScoreData(recipePoolArray, userId);
+      let updateQueryParam = dbQuery.updateWithDuplicateKeyQuery(constant['DB_TABLE']['RECIPE_NOT_USED_SCORE'], updateRecipeScoreObj, ['score'], 'menu');
+      promiseArray.push(pool.query(updateQueryParam));
 
-        // const updateUsedRecipeScoreObj = _formatRecipeScoreData(usedRecipeArray, userId);
-        // let updateUsedRecipeQueryParam = dbQuery.updateQuery(constant['DB_TABLE']['RECIPE_NOT_USED_SCORE'], updateUsedRecipeScoreObj, {});
-        // promiseArray.push(pool.query(updateUsedRecipeQueryParam));
-        return await Promise.all(promiseArray)
-        .then(([resp]) => {
+      let updateUsedRecipeQueryParam = dbQuery.updateUserUsedRecipeScoreQuery(userId);
+      promiseArray.push(pool.query(updateUsedRecipeQueryParam));
+      return await Promise.all(promiseArray)
+      .then(([resp]) => {
+        return true;
+      }).catch(err => {
+          utils.writeErrorLog('recipeNotUsedScorer', 'insertInRecipeNotUsedScore', 'Error while updating recipe not used scorer in database', err, queryParam);
           return true;
-        }).catch(err => {
-            utils.writeErrorLog('recipeNotUsedScorer', 'insertInRecipeNotUsedScore', 'Error while updating recipe not used scorer in database', err, queryParam);
-            return true;
-        })
-      // }).catch(err => {
-      //   utils.writeErrorLog('recipeNotUsedScorer', 'insertInRecipeNotUsedScore', 'Error while updating recipe not used scorer in database', err, queryParam);
-      // });
+      })
     }
   } catch (error) {
     utils.writeErrorLog('recipeNotUsedScorer', 'insertInRecipeNotUsedScore', 'Error while updating recipe not used scorer in database', error);

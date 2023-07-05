@@ -57,7 +57,7 @@ const login = async (req, res, cb) => {
 	if (helper.notEmpty(reqBody.email) && helper.notEmpty(reqBody.password)) {
 		const email = reqBody.email.trim();
 		const password = reqBody.password.trim();
-		const selectQuery = dbQuery.selectQuery(constant['DB_TABLE']['USERS'], ["id", "name", "email", "password", "roles", "confirmation_token", "preferred_store_id", "notification","enabled", "created", "last_login"], { email: `'${email}'` });
+		const selectQuery = dbQuery.selectQuery(constant['DB_TABLE']['USERS'], ["id", "name", "email", "password", "roles", "confirmation_token", "preferred_store_id", "notification", "enabled", "created", "last_login", "is_notification_read"], { email: `'${email}'` });
 		await pool.query(selectQuery).then(async ([result]) => {
 			if (result && result.length) {
 				let resultData = result[0];
@@ -142,6 +142,7 @@ const signUp = async (req, res, cb) => {
 								dietPlan: false,
 								notification: 1,
 								created: formatInsertData.created,
+								is_notification_read: 0
 							};
 							delete resultData['password']
 							resObj = Object.assign({ data: resultData }, utils.getSuccessResObj())
@@ -171,7 +172,7 @@ const signUp = async (req, res, cb) => {
 }
 
 const _socialLoginCommon = async (data, resObj, cb) => {
-	const selectQuery = dbQuery.selectQuery(constant['DB_TABLE']['USERS'], ["id", "name", "email", "preferred_store_id", "notification","enabled"], { email: `'${data.email}'` });
+	const selectQuery = dbQuery.selectQuery(constant['DB_TABLE']['USERS'], ["id", "name", "email", "preferred_store_id", "notification", "enabled", "is_notification_read"], { email: `'${data.email}'` });
 	await pool.query(selectQuery).then((resp) => {
 		const results = resp[0];
 		if (results && results.length) {
@@ -208,6 +209,7 @@ const _socialLoginCommon = async (data, resObj, cb) => {
 							dietPlan: false,
 							notification: 1,
 							created: formatInsertData.created,
+							is_notification_read: 0
 						};
 						delete resultData['provider'];
 						delete resultData['userid'];

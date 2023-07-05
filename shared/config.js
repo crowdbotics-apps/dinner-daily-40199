@@ -39,6 +39,8 @@ const kroger = {
 
 const migrationDate = process.env.MIGRATION_DATE;
 
+const showServerLog = process.env.SHOW_SERVER_LOG;
+
 module.exports = {
     database,
     secret,
@@ -50,6 +52,7 @@ module.exports = {
     firebaseDatabaseURL,
     kroger,
     migrationDate,
-    adminURL
+    adminURL,
+    showServerLog
 };
 

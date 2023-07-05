@@ -413,9 +413,6 @@ const recipeSideItemsQuery = (recipeId) => `select r.number_of_sides, r.id as ri
 const randomSideDishQuery = (recipePool) => `SELECT id FROM ${constant['DB_NAME']}.${constant['DB_TABLE']['RECIPES']}
     where (tag_names like '%simple salad%' or tag_names like '%reduced%') and id in (${recipePool}) ORDER BY RAND() LIMIT 1;`;
 
-const getUserCurrentWeekMenuQuery = (userId) => `SELECT * FROM ${constant['DB_NAME']}.${constant['DB_TABLE']['USER_WEEK_MENUS']}
-    WHERE user_id = ${userId} and DATE(created) >= DATE_SUB(CURDATE(), INTERVAL 6 DAY);`;
-
 const selectWeekMenuAlternativesQuery = (userId) => `select uwma.recipe_id as id, r.name, r.protein_category, uwma.is_on_sale
     from ${constant['DB_NAME']}.${constant['DB_TABLE']['USER_WEEK_DAY_MENU_ALTERNATIVES']} uwma
     join ${constant['DB_NAME']}.${constant['DB_TABLE']['USER_WEEK_MENUS']} uwm on uwm.id = uwma.user_week_menu_id
@@ -424,6 +421,11 @@ const selectWeekMenuAlternativesQuery = (userId) => `select uwma.recipe_id as id
 
 const userMenuCronQuery = `SELECT u.* FROM ${constant['DB_NAME']}.${constant['DB_TABLE']['USERS']} u join ${constant['DB_NAME']}.${constant['DB_TABLE']['USER_WEEK_MENUS']} uwm on uwm.user_id = u.id
     WHERE DATE(uwm.created) = DATE_SUB(CURDATE(), INTERVAL 7 DAY);`;
+
+const updateUserUsedRecipeScoreQuery = (userId) => `update ${constant['DB_NAME']}.${constant['DB_TABLE']['RECIPE_NOT_USED_SCORE']} set score = 0 where user_id= ${userId} and
+    recipe_id in (SELECT uwdm.main_recipe_id FROM ${constant['DB_NAME']}.${constant['DB_TABLE']['USER_WEEK_MENUS']} uwm
+    join ${constant['DB_NAME']}.${constant['DB_TABLE']['USER_WEEK_DAY_MENUS']} uwdm on uwdm.week_menu_id = uwm.id and uwm.user_id = ${userId}
+    WHERE DATE(uwm.created) >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)) limit 5;`;
 
 module.exports = {
     selectQuery,
@@ -464,7 +466,7 @@ module.exports = {
     ingredientBalanceQuery,
     recipeSideItemsQuery,
     randomSideDishQuery,
-    getUserCurrentWeekMenuQuery,
     selectWeekMenuAlternativesQuery,
-    userMenuCronQuery
+    userMenuCronQuery,
+    updateUserUsedRecipeScoreQuery
 }

@@ -275,6 +275,6 @@ export async function getUploadContent() {
 }
 
 /* Admin update Upload Content */
-export async function updateUploadContent(params, id) {
-    return request(`${EndPoints.uploadContent}${id}/`, PUT, params);
+export async function updateUploadContent(body, id, news) {
+    return request(`${EndPoints.uploadContent}${id}`, PUT, body, true, {news});
 }

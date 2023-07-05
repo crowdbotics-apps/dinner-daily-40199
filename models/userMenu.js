@@ -144,7 +144,7 @@ const insertDataInUserWeekMenu = async (userId, userMenu, storeId, familySize = 
 // Function to update data in user week day menu, shopping list and corresponding tables
 const updateUserWeekDayMenu = async (userId, userMenu, storeId, familySize = 1) => {
   utils.writeInsideFunctionLog('userMenu', 'updateUserWeekDayMenu', userMenu);
-  const selectQuery = dbQuery.getUserCurrentWeekMenuQuery(userId);
+  const selectQuery = dbQuery.selectQuery(constant['DB_TABLE']['USER_WEEK_MENUS'], [], {user_id: userId, 'DATE(created) >': 'DATE_SUB(CURDATE(), INTERVAL 6 DAY)'});
   const conn = await pool.getConnection();
   try {
       await conn.query('START TRANSACTION');

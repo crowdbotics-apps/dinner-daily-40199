@@ -117,7 +117,7 @@ const addBonusContent = async (req, res, cb) => {
 
 // Function to update bonus content data in database and upload new file to firebase and delete existing one
 const updateBonusContent = async (req, res, cb) => {
-  utils.writeInsideFunctionLog('siteContent', 'updateBonusContent');
+  utils.writeInsideFunctionLog('siteContent', 'updateBonusContent', req.body);
   let resObj = Object.assign({}, utils.getErrorResObj());
   const bonusId = req.params.id;
   let promiseArr = [];
@@ -177,13 +177,17 @@ const uploadContent = async (req, res, cb) => {
 // Function to update site content in database
 const updateUploadContent = async (req, res, cb) => {
   utils.writeInsideFunctionLog("siteContent", "updateUploadContent", req.body);
-  resObj = Object.assign({}, utils.getErrorResObj());
+  let resObj = Object.assign({}, utils.getErrorResObj());
   if (helper.notEmpty(req.body?.title) && helper.notEmpty(req.body?.content) && helper.notEmpty(req.params.id)) {
     const updateData = {...req.body, updated: helper.getDateAndTime()}
-    const queryParam = dbQuery.updateQuery(constant['DB_TABLE']['UPLOAD_CONTENT'], updateData, { id:req.params.id });
+    let queryParam = dbQuery.updateQuery(constant['DB_TABLE']['UPLOAD_CONTENT'], updateData, { id:req.params.id });
     await pool.query(queryParam).then(resp => {
       resObj = Object.assign({ data: updateData }, utils.getSuccessResObj());
       resObj['message'] = constant['UPDATE_SUCCESS_MSG'];
+      if (req.query.news == 'true') {
+        queryParam = dbQuery.updateQuery(constant['DB_TABLE']['USERS'], {"is_notification_read": 0});
+        pool.query(queryParam);
+      }
       cb(resObj);
     }).catch(err => {
       resObj['message'] = constant['OOPS_ERROR'];

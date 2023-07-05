@@ -105,8 +105,8 @@ const userList = async (req, res, cb) => {
 }
 
 const updateUser = async (req, res, cb )=>{
-    utils.writeInsideFunctionLog("admin User", "Update User");
 	let data = req.body;
+    utils.writeInsideFunctionLog("admin User", "Update User", data);
     let id = req.params.id;
     resObj = Object.assign({}, utils.getErrorResObj());
     if(helper.notEmpty(data.name) && helper.notEmpty(data.email) && helper.notEmpty(data.phone_number)&& helper.notEmpty(data.roles)){
