@@ -32,7 +32,7 @@ const _formatDataForUserWeekDayMenuAlternatives = (weekMenuId, userMenu, dateTim
       'week_day_number': 1,
       'is_on_sale': 0,
       'created': dateTime || helper.getDateAndTime(),
-      'updated': dateTime || null
+      'updated': helper.getDateAndTime()
     }
     weekDayMenuAlternatives.push(obj);
   }
@@ -80,7 +80,7 @@ const _formatDataForUserWeekDayMenu = (weekMenuId, userMenu, dateTime) => {
           'first_side_recipe_id': menu.firstSideId || null,
           'second_side_recipe_id': menu.secSideId || null,
           'created': dateTime || helper.getDateAndTime(),
-          'updated': dateTime || null,
+          'updated': helper.getDateAndTime(),
           'original_main_recipe_id': menu.id,
           'original_first_side_recipe_id': menu.firstSideId || null,
           'original_second_side_recipe_id': menu.secSideId || null,

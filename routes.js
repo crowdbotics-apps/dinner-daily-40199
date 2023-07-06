@@ -106,6 +106,7 @@ putHandler['/api/v1/recipe/:id'] = recipeCtlr.updateRecipe;
 putHandler['/api/v1/recipe/:id/notes'] = recipeCtlr.updateRecipeNotes;
 putHandler['/api/v1/user/weekRecipe/:id'] = recipeCtlr.updateUserWeekRecipe;
 putHandler['/api/v1/shopping/ingredient/:id'] = shoppingCtlr.updateIngredient;
+putHandler['/api/v1/shopping/ingredients'] = shoppingCtlr.updateMultipleIngredients;
 putHandler['/api/v1/admin/user/:id'] = adminUserCtlr.updateUser;
 putHandler['/api/v1/admin/store/:id'] = stateStoreCtlr.updateStore;
 putHandler['/api/v1/admin/ingredient/:id'] = ingredientCtlr.updateIngredient;

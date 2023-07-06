@@ -38,6 +38,13 @@ const updateIngredient = (req, res) => {
   shoppingModel.updateIngredient(req, res, cb);
 }
 
+const updateMultipleIngredients = (req, res) => {
+  let cb = function(result) {
+    utils.sendResponse(res, result);
+  }
+  shoppingModel.updateMultipleIngredients(req, res, cb);
+}
+
 const deleteIngredient = (req, res) => {
   let cb = function(result) {
     utils.sendResponse(res, result);
@@ -51,5 +58,6 @@ module.exports = {
     getIngredients,
     addIngredient,
     updateIngredient,
+    updateMultipleIngredients,
     deleteIngredient
 }

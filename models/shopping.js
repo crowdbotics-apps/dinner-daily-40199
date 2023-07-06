@@ -132,7 +132,7 @@ const updateIngredient = (req, res, cb) => {
         }).catch(err => {
             resObj['message'] = constant['OOPS_ERROR'];
             resObj['date'] = err.message || err;
-            utils.writeErrorLog('shopping', 'updateIngredient', 'Error while add user ingredient in shopping list items', err, queryParam);
+            utils.writeErrorLog('shopping', 'updateIngredient', 'Error while update ingredient in shopping list items', err, queryParam);
             cb(resObj);
         });
     } else {
@@ -140,6 +140,28 @@ const updateIngredient = (req, res, cb) => {
         utils.writeErrorLog('shopping', 'updateIngredient', 'Ingredient id is missing in request parameter');
         cb(resObj);
     }
+}
+
+// Function to update multiple shopping ingredients in shopping list item
+const updateMultipleIngredients = (req, res, cb) => {
+	utils.writeInsideFunctionLog('shopping', 'updateMultipleIngredients', req.body);
+    let resObj = Object.assign({}, utils.getErrorResObj());
+    let updateObj = {
+        checked_off: req.body.checked_off || 0,
+        updated: helper.getDateAndTime()
+    };
+    const queryParam = dbQuery.updateQuery(constant['DB_TABLE']['SHOPPING_LIST_ITEMS'], updateObj, {shopping_category: req.body.shopping_category, shopping_list_id: req.body.shopping_list_id});
+    pool.query(queryParam)
+    .then(resp => {
+        resObj = Object.assign({}, utils.getSuccessResObj());
+        resObj['message'] = constant['UPDATE_SUCCESS_MSG'];
+        cb(resObj);
+    }).catch(err => {
+        resObj['message'] = constant['OOPS_ERROR'];
+        resObj['date'] = err.message || err;
+        utils.writeErrorLog('shopping', 'updateMultipleIngredients', 'Error while update checked off column in shopping list items', err, queryParam);
+        cb(resObj);
+    });
 }
 
 // Function to delete ingredients from shopping list item
@@ -173,5 +195,6 @@ module.exports = {
     getIngredients,
     addIngredient,
     updateIngredient,
+    updateMultipleIngredients,
     deleteIngredient
 }
