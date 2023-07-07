@@ -16,10 +16,9 @@ const dbObj = config['database'];
 let pool = mysql.createPool({
   connectionLimit: 50,
   host: 'us-cdbr-east-06.cleardb.net',
-  user: 'be2fbda272a899',
-  password: 'df8486ac',
-  port:3306,
-   //database: 'heroku_52b3caaac7494c9',
+  user: 'bc46fe6441f992',
+  password: '9a0fa466',
+  port:3306
 })
 
 //pool.on("connection", (connection)=>console.log("Connected with database"))
