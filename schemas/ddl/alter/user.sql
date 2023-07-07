@@ -11,3 +11,5 @@ ALTER TABLE heroku_52b3caaac7494c9.users MODIFY password VARCHAR(255);
 ALTER TABLE heroku_52b3caaac7494c9.users add stripe_customer_id VARCHAR(255);
 
 ALTER TABLE heroku_52b3caaac7494c9.users ADD is_notification_read int(11) NOT NULL DEFAULT 0;
+
+ALTER TABLE heroku_52b3caaac7494c9.users ADD COLUMN referral_code VARCHAR(10) NOT NULL DEFAULT '';
